@@ -25,16 +25,3 @@ class UserStockingData {
         self.investedBalance = investedBalance
     }
 }
-
-@Model
-class EquityHistory {
-    var id = UUID()
-    var totalEquity: Double
-    var timestamp: Date = Date()
-    
-    var userStockingData: UserStockingData?
-    
-    init(totalEquity: Double) {
-        self.totalEquity = totalEquity
-    }
-}

@@ -119,7 +119,7 @@ struct WalletView: View {
 }
 
 #Preview {
-    var userData = UserStockingData(totalEquity: 100.0, tradeableBalance: 67.0, investedBalance: 33.0)
+    let userData = UserStockingData(totalEquity: 100.0, tradeableBalance: 67.0, investedBalance: 33.0)
     
     WalletView(userData: userData)
 }
