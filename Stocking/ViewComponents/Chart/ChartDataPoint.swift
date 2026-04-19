@@ -1,0 +1,11 @@
+import Foundation
+
+struct ChartDataPoint: Identifiable {
+    let id = UUID()
+    let date: Date
+    let value: Double
+}
+
+protocol Chartable {
+    var chartData: [ChartDataPoint] { get }
+}
