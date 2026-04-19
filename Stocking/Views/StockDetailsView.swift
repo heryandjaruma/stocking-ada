@@ -1,3 +1,4 @@
+// StockDetailsView.swift
 import SwiftUI
 
 struct StockDetailsView: View {
@@ -17,86 +18,78 @@ struct StockDetailsView: View {
         return .neutral
     }
 
+    private var statusColor: Color { priceStatus.color }
+
     var body: some View {
-        HStack {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
 
-            VStack {
-                Text(stock.symbol)
-                    .font(.title.bold())
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 24)
-                    .padding(.top, 10)
-
-                Text(stock.name)
-                    .font(.title3)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 24)
-            }
-            Image(systemName: "apple.logo")
-                .font(.system(size: 50))
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(stock.symbol)
+                            .font(.title.bold())
+                        Text(stock.name)
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "apple.logo")
+                        .font(.system(size: 44))
+                        .foregroundStyle(.secondary)
+                }
                 .padding(.horizontal, 24)
-        }
+                .padding(.top, 16)
+                .padding(.bottom, 20)
 
-        Spacer()
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(stock.priceHistory.last?.price ?? 0,
+                         format: .number.precision(.fractionLength(2)))
+                        .font(.system(size: 36, weight: .bold))
+
+                    Text(stock.change, format: .number.precision(.fractionLength(2)))
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(statusColor)
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 12)
+
+                PriceChart(
+                    data: stock.chartData
+                )
+                .frame(maxWidth: .infinity)
+                .frame(height: 220)
+
+                Spacer().frame(height: 32)
+                
+                HStack {
+                    Text("Test")
+                }
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-#Preview {
-    let neutralStock = Stock(
-        symbol: "MSFT",
-        name: "Microsoft Corp.",
-        priceHistory: [
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -6,
-                    to: Date()
-                )!,
-                price: 415.00
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -5,
-                    to: Date()
-                )!,
-                price: 418.20
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -4,
-                    to: Date()
-                )!,
-                price: 412.80
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -3,
-                    to: Date()
-                )!,
-                price: 416.50
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -2,
-                    to: Date()
-                )!,
-                price: 419.00
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -1,
-                    to: Date()
-                )!,
-                price: 420.00
-            ),
-            PriceHistory(date: Date(), price: 420.00),  // same as previous → neutral
-        ]
-    )
+// MARK: - Preview
 
-    StockDetailsView(stock: neutralStock)
+private func previewDate(_ offset: Int) -> Date {
+    Calendar.current.date(byAdding: .day, value: offset, to: Date())!
+}
+
+#Preview {
+    NavigationStack {
+        StockDetailsView(stock: Stock(
+            symbol: "AAPL",
+            name: "Apple Inc.",
+            priceHistory: [
+                PriceHistory(date: previewDate(-6), price: 415.00),
+                PriceHistory(date: previewDate(-5), price: 418.20),
+                PriceHistory(date: previewDate(-4), price: 412.80),
+                PriceHistory(date: previewDate(-3), price: 416.50),
+                PriceHistory(date: previewDate(-2), price: 419.00),
+                PriceHistory(date: previewDate(-1), price: 420.00),
+                PriceHistory(date: previewDate(0),  price: 420.00),
+            ]
+        ))
+    }
 }
