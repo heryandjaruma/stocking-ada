@@ -109,7 +109,7 @@ struct WalletView: View {
                                 Text("Gain")
                                     .font(.caption)
                             }
-                            .foregroundStyle(.green)
+                            .foregroundStyle(gainData > 0 ? .green : (gainData < 0 ? .red : .gray))
                         }
                     }
                 }
@@ -143,12 +143,12 @@ private func previewDate(_ offset: Int) -> Date {
     /// We can create date shifted fromt today using Calendar.current.date(byAdding: .day, value: -1, to: Date())
     
     let previewEquityHistory = [
-        EquityHistory(totalEquity: 200.0, timestamp: Calendar.current.date(byAdding: .day, value: 0, to: Date())!),
+        EquityHistory(totalEquity: 202.0, timestamp: Calendar.current.date(byAdding: .day, value: 0, to: Date())!),
         EquityHistory(totalEquity: 103.0, timestamp: Calendar.current.date(byAdding: .day, value: -1, to: Date())!),
         EquityHistory(totalEquity: 104.0, timestamp: Calendar.current.date(byAdding: .day, value: -2, to: Date())!),
         EquityHistory(totalEquity: 105.0, timestamp: Calendar.current.date(byAdding: .day, value: -3, to: Date())!),
         EquityHistory(totalEquity: 106.0, timestamp: Calendar.current.date(byAdding: .day, value: -4, to: Date())!),
-        EquityHistory(totalEquity: 108.0, timestamp: Calendar.current.date(byAdding: .day, value: -5, to: Date())!),
+        EquityHistory(totalEquity: 204.0, timestamp: Calendar.current.date(byAdding: .day, value: -5, to: Date())!),
     ]
         .sorted { $0.timestamp < $1.timestamp }
     
