@@ -13,12 +13,22 @@ struct ContentView: View {
 //    @Query private var items: [Item]
 
     var body: some View {
-        Text("Hello Stocking")
+        TabView {
+            Tab("Home", systemImage: "house") {
+                
+            }
+            Tab("Insights", systemImage: "rectangle.and.text.magnifyingglass") {
+
+            }
+            Tab("Wallet", systemImage: "wallet.bifold") {
+                WalletScreen()
+            }
+        }
     }
 
 }
 
 #Preview {
     ContentView()
-//        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: UserStockingData.self, inMemory: true)
 }

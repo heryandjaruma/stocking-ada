@@ -16,7 +16,9 @@ class EquityHistory {
     
     var userStockingData: UserStockingData?
     
-    init(totalEquity: Double) {
+    init(id: UUID = UUID(), totalEquity: Double, timestamp: Date, userStockingData: UserStockingData? = nil) {
         self.totalEquity = totalEquity
+        self.timestamp = timestamp
+        self.userStockingData = userStockingData
     }
 }

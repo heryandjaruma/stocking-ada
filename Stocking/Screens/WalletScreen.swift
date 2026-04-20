@@ -11,13 +11,14 @@ import SwiftData
 struct WalletScreen: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var userData: [UserStockingData]
+    @Query(sort: \EquityHistory.timestamp, order: .forward) private var equityHistory: [EquityHistory]
     
     var user: UserStockingData? { userData.first }
     
     var body: some View {
         Group {
             if let user {
-                WalletView(userData: user)
+                WalletView(userData: user, equityHistory: equityHistory)
             } else { Color.clear } /// Needed so SwiftUI can re-render properly when condition becomes true
         }
             .onAppear {
@@ -28,9 +29,7 @@ struct WalletScreen: View {
                 modelContext.insert(defaultUser)
                 try? modelContext.save()
             }
-        
     }
-    
 }
 
 #Preview {
