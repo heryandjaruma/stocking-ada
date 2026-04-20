@@ -13,7 +13,8 @@ struct StockingApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             UserStockingData.self,
-            EquityHistory.self
+            EquityHistory.self,
+            GlobalConfig.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -26,7 +27,8 @@ struct StockingApp: App {
     
     /// Run seeds
     init() {
-        seedIfNeeded(context: sharedModelContainer.mainContext)
+        seedEquityHistoryIfNeeded(context: sharedModelContainer.mainContext)
+        seedGlobalConfigIfNeeded(context: sharedModelContainer.mainContext)
     }
     
     var body: some Scene {
@@ -40,12 +42,23 @@ struct StockingApp: App {
 
 // MARK: - Some initials data
 
+/// GLOBAL CONFIG
+func seedGlobalConfigIfNeeded(context: ModelContext) {
+    let existing = try? context.fetch(FetchDescriptor<GlobalConfig>())
+    guard existing?.isEmpty == true else { return }
+    
+    /// CURRENT DATE
+    /// Define config date as today
+    let currentDateConfig = GlobalConfig(key: "currentDate", dateValue: Date.now)
+    context.insert(currentDateConfig)
+}
+
 /// EQUITY (balance)
 struct EquityHistoryJSON: Codable {
     let totalEquity: Double
     let timestamp: Date
 }
-func seedIfNeeded(context: ModelContext) {
+func seedEquityHistoryIfNeeded(context: ModelContext) {
     let existing = try? context.fetch(FetchDescriptor<EquityHistory>())
     guard existing?.isEmpty == true else { return }
     
