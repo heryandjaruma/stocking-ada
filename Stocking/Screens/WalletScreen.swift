@@ -21,18 +21,13 @@ struct WalletScreen: View {
                 WalletView(userData: user, equityHistory: equityHistory)
             } else { Color.clear } /// Needed so SwiftUI can re-render properly when condition becomes true
         }
-            .onAppear {
-                guard userData.isEmpty else { return }
-                
-                let defaultUser = UserStockingData(totalEquity: 100.0, tradeableBalance: 69.00, investedBalance: 30.0)
-                
-                modelContext.insert(defaultUser)
-                try? modelContext.save()
-            }
+        .onAppear {
+            guard userData.isEmpty else { return }
+            
+            let defaultUser = UserStockingData(totalEquity: 100.0, tradeableBalance: 69.00, investedBalance: 30.0)
+            
+            modelContext.insert(defaultUser)
+            try? modelContext.save()
+        }
     }
-}
-
-#Preview {
-    WalletScreen()
-        .modelContainer(for: UserStockingData.self, inMemory: true)
 }

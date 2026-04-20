@@ -10,12 +10,11 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-//    @Query private var items: [Item]
 
     var body: some View {
         TabView {
             Tab("Home", systemImage: "house") {
-                
+                HomeScreen()
             }
             Tab("Insights", systemImage: "rectangle.and.text.magnifyingglass") {
 
