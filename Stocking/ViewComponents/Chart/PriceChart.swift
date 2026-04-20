@@ -115,7 +115,7 @@ private let previewBalanceData: [ChartDataPoint] = [
     VStack(spacing: 24) {
         VStack(alignment: .leading, spacing: 8) {
             Text("TSLA — Stock").font(.headline)
-            PriceChart(data: previewStockData, ruleDate: previewDate(-4))
+            PriceChart(data: previewStockData, ruleDate: previewDate(-3))
                 .frame(height: 200)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
         }
@@ -128,4 +128,31 @@ private let previewBalanceData: [ChartDataPoint] = [
         }
     }
     .padding()
+}
+
+import Foundation
+
+struct EquityRecord: Codable {
+    let totalEquity: Double
+    let timestamp: Date
+}
+
+#Preview("Balance History") {
+    let url = Bundle.main.url(forResource: "equityHistory", withExtension: "json")!
+    let data = try! Data(contentsOf: url)
+    
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    let records = try! decoder.decode([EquityRecord].self, from: data)
+    
+    let chartData = records.map { record in
+        ChartDataPoint(date: record.timestamp, value: record.totalEquity)
+    }
+    
+    return VStack(alignment: .leading, spacing: 8) {
+        Text("My Balance").font(.headline)
+        PriceChart(data: chartData)
+            .frame(height: 200)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
 }

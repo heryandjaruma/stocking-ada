@@ -1,0 +1,42 @@
+[
+    {
+        "symbol": "AAPL",
+        "name": "Apple Inc."
+    },
+    {
+        "symbol": "MSFT",
+        "name": "Microsoft Corporation"
+    },
+    {
+        "symbol": "GOOG",
+        "name": "Alphabet Inc."
+    },
+    {
+        "symbol": "NVDA",
+        "name": "NVIDIA Corporation"
+    },
+    {
+        "symbol": "META",
+        "name": "Meta Platforms, Inc."
+    },
+    {
+        "symbol": "NFLX",
+        "name": "Netflix, Inc."
+    },
+    {
+        "symbol": "TGT",
+        "name": "Target Corporation"
+    },
+    {
+        "symbol": "SAP",
+        "name": "SAP SE"
+    },
+    {
+        "symbol": "WMT",
+        "name": "Walmart Inc."
+    },
+    {
+        "symbol": "TSM",
+        "name": "Taiwan Semiconductor Manufacturing Company Limited"
+    },
+]
