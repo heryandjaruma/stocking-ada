@@ -8,6 +8,17 @@ struct StockDetailsView: View {
         Calendar.current.startOfDay(for: Date())
     }
 
+    @State private var selectedRange: String = "1D"
+    private let ranges = ["1D", "1W", "1M"]
+    
+    private var changePercent: Double {
+        let today = Calendar.current.startOfDay(for: Date())
+        guard let current = stock.priceHistory.last?.price else { return 0 }
+        let previous = stock.previousPrice(for: today) ?? current
+        guard previous != 0 else { return 0 }
+        return (stock.change / previous) * 100
+    }
+    
     private var priceStatus: PriceStatus {
         guard let current = stock.priceHistory.last?.price else {
             return .neutral
@@ -17,7 +28,7 @@ struct StockDetailsView: View {
         if current < previous { return .falling }
         return .neutral
     }
-
+    
     private var statusColor: Color { priceStatus.color }
 
     var body: some View {
@@ -41,14 +52,38 @@ struct StockDetailsView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 20)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(stock.priceHistory.last?.price ?? 0,
-                         format: .number.precision(.fractionLength(2)))
-                        .font(.system(size: 36, weight: .bold))
+                // Replace this whole VStack block + the HStack { Text("Test") }:
 
-                    Text(stock.change, format: .number.precision(.fractionLength(2)))
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("$\(stock.priceHistory.last?.price ?? 0, specifier: "%.2f")")
+                        .font(.system(size: 28, weight: .bold))
+
+                    HStack(spacing: 6) {
+                        // Arrow + change amount + percentage
+                        HStack(spacing: 2) {
+                            Image(systemName: priceStatus == .falling ? "arrow.down" : priceStatus == .rising ? "arrow.up" : "minus")
+                                .font(.system(size: 13, weight: .bold))
+                            Text("\(abs(stock.change), specifier: "%.2f")")
+                            Text("(\(changePercent, specifier: "%.2f")%)")
+                        }
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(statusColor)
+
+                        Text("Today")
+                            .font(.system(size: 15, weight: .regular))
+                            .foregroundStyle(.primary)
+
+                        Spacer()
+
+                        // Time range picker
+                        Picker("Range", selection: $selectedRange) {
+                            ForEach(ranges, id: \.self) { range in
+                                Text(range).tag(range)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(width: 120)
+                    }
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 12)
