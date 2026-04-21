@@ -19,8 +19,11 @@ struct HomeScreen: View {
     private var configs: [GlobalConfig]
     var currentDateConfig: GlobalConfig? { configs.first }
     
+    /// Get all stocks
+    @Query var stocks: [Stock]
+    
     var body: some View {
-        HomeView(currentDate: currentDateConfig?.dateValue ?? Date.now,
+        HomeView(currentDate: currentDateConfig?.dateValue ?? Date.now, stocks: stocks,
                  onForwardDay: {
             guard let config = currentDateConfig else { return }
             config.dateValue = Calendar.current.date(byAdding: .day, value: 1, to: config.dateValue!)!

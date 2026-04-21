@@ -103,23 +103,23 @@ private func previewDate(_ offset: Int) -> Date {
 
 #Preview {
     let aapl = Stock(symbol: "AAPL", name: "Apple Inc.", priceHistory: [
-        PriceHistory(date: previewDate(-6), price: 170.00),
-        PriceHistory(date: previewDate(-5), price: 173.50),
-        PriceHistory(date: previewDate(-4), price: 171.20),
-        PriceHistory(date: previewDate(-3), price: 176.80),
-        PriceHistory(date: previewDate(-2), price: 180.10),
-        PriceHistory(date: previewDate(-1), price: 178.90),
-        PriceHistory(date: previewDate(0),  price: 182.30),
+        PriceHistory(timestamp: previewDate(-6), price: 170.00),
+        PriceHistory(timestamp: previewDate(-5), price: 173.50),
+        PriceHistory(timestamp: previewDate(-4), price: 171.20),
+        PriceHistory(timestamp: previewDate(-3), price: 176.80),
+        PriceHistory(timestamp: previewDate(-2), price: 180.10),
+        PriceHistory(timestamp: previewDate(-1), price: 178.90),
+        PriceHistory(timestamp: previewDate(0),  price: 182.30),
     ])
 
     let msft = Stock(symbol: "MSFT", name: "Microsoft Corp.", priceHistory: [
-        PriceHistory(date: previewDate(-6), price: 415.00),
-        PriceHistory(date: previewDate(-5), price: 412.30),
-        PriceHistory(date: previewDate(-4), price: 418.60),
-        PriceHistory(date: previewDate(-3), price: 420.00),
-        PriceHistory(date: previewDate(-2), price: 416.50),
-        PriceHistory(date: previewDate(-1), price: 422.10),
-        PriceHistory(date: previewDate(0),  price: 419.80),
+        PriceHistory(timestamp: previewDate(-6), price: 415.00),
+        PriceHistory(timestamp: previewDate(-5), price: 412.30),
+        PriceHistory(timestamp: previewDate(-4), price: 418.60),
+        PriceHistory(timestamp: previewDate(-3), price: 420.00),
+        PriceHistory(timestamp: previewDate(-2), price: 416.50),
+        PriceHistory(timestamp: previewDate(-1), price: 422.10),
+        PriceHistory(timestamp: previewDate(0),  price: 419.80),
     ])
 
     CompareChart(primary: aapl, secondary: msft)

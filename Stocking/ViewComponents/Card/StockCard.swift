@@ -3,18 +3,15 @@ import SwiftUI
 
 struct StockCard: View {
     var stock: Stock
+    var currentDate: Date
 
     private var today: Date {
         Calendar.current.startOfDay(for: Date())
     }
 
     private var priceStatus: PriceStatus {
-        guard let current = stock.priceHistory.last?.price else {
-            return .neutral
-        }
-        let previous = stock.previousPrice(for: today) ?? current
-        if current > previous { return .rising }
-        if current < previous { return .falling }
+        let change = stock.changeForDate(currentDate)
+        if change > 0 { return .rising } else if change < 0 { return .falling }
         return .neutral
     }
 
@@ -36,7 +33,7 @@ struct StockCard: View {
 
             // generated
             Chart {
-                ForEach(stock.priceHistory, id: \.timestamp) { item in
+                ForEach(stock.sortedPriceHistory, id: \.timestamp) { item in
                     AreaMark(
                         x: .value("Date", item.timestamp),
                         y: .value("Price", item.price)
@@ -66,13 +63,13 @@ struct StockCard: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 Text(
-                    stock.priceHistory.last?.price ?? 0,
+                    stock.sortedPriceHistory.last?.price ?? 0,
                     format: .number.precision(.fractionLength(2))
                 )
                 .font(.system(size: 14, weight: .semibold))
 
                 Text(
-                    stock.change,
+                    stock.changeForDate(currentDate),
                     format: .number.precision(.fractionLength(2))
                 )
                 .foregroundStyle(.white)
@@ -94,180 +91,6 @@ struct StockCard: View {
     }
 }
 
-#Preview {
-
-    let fallingStock = Stock(
-        symbol: "TSLA",
-        name: "Tesla Inc.",
-        priceHistory: [
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -6,
-                    to: Date()
-                )!,
-                price: 245.00
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -5,
-                    to: Date()
-                )!,
-                price: 238.50
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -4,
-                    to: Date()
-                )!,
-                price: 242.10
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -3,
-                    to: Date()
-                )!,
-                price: 230.80
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -2,
-                    to: Date()
-                )!,
-                price: 225.40
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -1,
-                    to: Date()
-                )!,
-                price: 219.90
-            ),
-            PriceHistory(date: Date(), price: 212.30),
-        ]
-    )
-
-    let neutralStock = Stock(
-        symbol: "MSFT",
-        name: "Microsoft Corp.",
-        priceHistory: [
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -6,
-                    to: Date()
-                )!,
-                price: 415.00
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -5,
-                    to: Date()
-                )!,
-                price: 418.20
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -4,
-                    to: Date()
-                )!,
-                price: 412.80
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -3,
-                    to: Date()
-                )!,
-                price: 416.50
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -2,
-                    to: Date()
-                )!,
-                price: 419.00
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -1,
-                    to: Date()
-                )!,
-                price: 420.00
-            ),
-            PriceHistory(date: Date(), price: 420.00),  // same as previous → neutral
-        ]
-    )
-
-    StockCard(stock: fallingStock)
-    StockCard(stock: neutralStock)
-
-}
-
-#Preview("Green") {
-    let sampleStock = Stock(
-        symbol: "AAPL",
-        name: "Apple Inc.",
-        priceHistory: [
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -6,
-                    to: Date()
-                )!,
-                price: 178.50
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -5,
-                    to: Date()
-                )!,
-                price: 182.30
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -4,
-                    to: Date()
-                )!,
-                price: 179.90
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -3,
-                    to: Date()
-                )!,
-                price: 185.10
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -2,
-                    to: Date()
-                )!,
-                price: 188.75
-            ),
-            PriceHistory(
-                date: Calendar.current.date(
-                    byAdding: .day,
-                    value: -1,
-                    to: Date()
-                )!,
-                price: 191.20
-            ),
-            PriceHistory(date: Date(), price: 195.60),
-        ]
-    )
-    StockCard(stock: sampleStock)
-}
+//#Preview {
+//    StockCard(stock: Stock, currentDate: <#T##Date#>)
+//}

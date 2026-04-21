@@ -6,7 +6,8 @@ class Stock: Identifiable {
     var id = UUID()
     var symbol: String
     var name: String
-    var priceHistory: [PriceHistory]
+    @Relationship(deleteRule: .cascade, inverse: \PriceHistory.stock)
+    var priceHistory: [PriceHistory] = []
 
     init(
         id: UUID = UUID(),
@@ -20,15 +21,28 @@ class Stock: Identifiable {
         self.priceHistory = priceHistory
     }
 
-    func previousPrice(for date: Date) -> Double? {
-            priceHistory.last(where: { $0.timestamp < date })?.price
-        }
+    var sortedPriceHistory: [PriceHistory] {
+        priceHistory.sorted(by: { $0.timestamp < $1.timestamp })
+    }
 
-        var change: Double {
-            let today = Calendar.current.startOfDay(for: Date())
-            guard let current = priceHistory.last?.price else { return 0 }
-            let previous = previousPrice(for: today) ?? current
-            return current - previous
-        }
+    func previousPrice(date: Date) -> Double? {
+        priceHistory.last(where: { $0.timestamp < date })?.price
+    }
 
+    func changeForDate(_ date: Date) -> Double {
+        let calendar = Calendar.current
+        let currentDate = date
+        let previousDate = Calendar.current.date(
+            byAdding: .day,
+            value: -1,
+            to: currentDate
+        )!
+        
+        if let currentPrice = priceHistory.first(where: { calendar.isDate($0.timestamp, inSameDayAs: currentDate) })?.price,
+           let previousPrice = priceHistory.first(where: { calendar.isDate($0.timestamp, inSameDayAs: previousDate) })?.price {
+            return currentPrice - previousPrice
+        }
+        
+        return 0
+    }
 }
