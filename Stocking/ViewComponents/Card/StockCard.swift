@@ -1,13 +1,9 @@
 import Charts
 import SwiftUI
 
-struct StockCard: View {
+struct StockCard: View, Equatable {
     var stock: Stock
     var currentDate: Date
-
-    private var today: Date {
-        Calendar.current.startOfDay(for: Date())
-    }
 
     private var priceStatus: PriceStatus {
         let change = stock.changeForDate(currentDate)
@@ -16,6 +12,13 @@ struct StockCard: View {
     }
 
     private var statusColor: Color { priceStatus.color }
+    
+    private var timeRangedStockPriceHistory: [PriceHistory] {
+        let someTimeAgo = Calendar.current.date(byAdding: .day, value: -7, to: currentDate)!
+        return stock.sortedPriceHistory.filter {
+            $0.timestamp >= someTimeAgo && $0.timestamp <= currentDate
+        }
+    }
 
     var body: some View {
         HStack {
@@ -33,7 +36,7 @@ struct StockCard: View {
 
             // generated
             Chart {
-                ForEach(stock.sortedPriceHistory, id: \.timestamp) { item in
+                ForEach(timeRangedStockPriceHistory, id: \.timestamp) { item in
                     AreaMark(
                         x: .value("Date", item.timestamp),
                         y: .value("Price", item.price)
@@ -63,7 +66,7 @@ struct StockCard: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 Text(
-                    stock.sortedPriceHistory.last?.price ?? 0,
+                    timeRangedStockPriceHistory.last?.price ?? 0,
                     format: .number.precision(.fractionLength(2))
                 )
                 .font(.system(size: 14, weight: .semibold))
