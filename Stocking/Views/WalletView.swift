@@ -28,6 +28,21 @@ struct WalletView: View {
     let columns = [GridItem(.flexible(), alignment: .topLeading),
                    GridItem(.flexible(), alignment: .topLeading)]
     
+    /// Balance Sheets
+    var onSaveBalance: ((Double) -> Void)? /// callback when saving balance
+    @State private var isShowBalanceSheet: Bool = false
+    @State private var isShowError: Bool = false
+    @State private var currentBalance: String
+    @State private var lastBalanceSaved: Double
+    
+    init(userData: UserStockingData, equityHistory: [EquityHistory], onSaveBalance: ((Double) -> Void)? = nil) {
+        self.userData = userData
+        self.equityHistory = equityHistory
+        _currentBalance = State(initialValue: String(userData.totalEquity)) /// Need to set to state variable in the init()
+        lastBalanceSaved = userData.totalEquity
+        self.onSaveBalance = onSaveBalance
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -58,13 +73,66 @@ struct WalletView: View {
                         }
                         Spacer()
                         Button(action: {
-                            
+                            isShowBalanceSheet.toggle()
                         }) {
                             Text("Add Balance")
                                 .bold()
                         }
                         .buttonStyle(.glass)
                         .padding()
+                        .sheet(isPresented: $isShowBalanceSheet) {
+                            VStack(alignment: .center, spacing: 20) {
+                                HStack {
+                                    Spacer()
+                                    Button {
+                                        currentBalance = String(lastBalanceSaved)
+                                        isShowBalanceSheet.toggle()
+                                    } label: {
+                                        Image(systemName: "xmark")
+                                            .frame(width: 44, height: 44)
+                                            .glassEffect(in: .circle)
+                                    }
+                                }
+                                Text("Add Balance")
+                                    .font(.title3)
+                                TextField("Set Balance", text: $currentBalance)
+                                    .keyboardType(.decimalPad)
+                                    .padding()
+                                    .background(Color(.systemGray6))
+                                    .cornerRadius(16)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .stroke(Color.black.opacity(0.3), lineWidth: 1)
+                                    }
+                                    .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 0)
+                                if isShowError {
+                                    Text("Value must be a number")
+                                        .font(.footnote)
+                                        .foregroundStyle(.red)
+                                }
+                                Button(action: {
+                                    /// Do some checkings
+                                    if let value = Double(currentBalance) {
+                                        print(currentBalance)
+                                        onSaveBalance?(value)
+                                        lastBalanceSaved = value
+                                        isShowError = false
+                                        isShowBalanceSheet.toggle()
+                                    } else {
+                                        isShowError = true
+                                    }
+                                }) {
+                                    Text("Save")
+                                        .padding(.vertical, 8)
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.glassProminent)
+                                Spacer()
+                            }
+                            .padding()
+                            .presentationDetents([.fraction(0.4)]) /// Allow sheet height max 40%
+                            .interactiveDismissDisabled() /// Disallow interaction except on close button
+                        }
                     }
                 }
                 
