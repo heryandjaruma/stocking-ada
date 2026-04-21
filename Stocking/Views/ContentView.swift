@@ -17,7 +17,7 @@ struct ContentView: View {
                 HomeScreen()
             }
             Tab("Insights", systemImage: "rectangle.and.text.magnifyingglass") {
-
+                InsightsScreen()
             }
             Tab("Wallet", systemImage: "wallet.bifold") {
                 WalletScreen()

@@ -1,66 +1,37 @@
-//
-//  HomeView.swift
-//  Stocking
-//
-//  Created by Heryan Djaruma on 20/04/26.
-//
-
 import SwiftUI
 
-struct HomeView: View {
+struct SelectStock: View {
     var currentDate: Date
     var stocks: [Stock] = []
-    
-    var onForwardDay: (() -> Void)? = nil // optional callback param
-    
+    var onSelect: (Stock) -> Void
+
+    @State private var searchText: String = ""
+
+    var filteredStocks: [Stock] {
+        if searchText.isEmpty {
+            return stocks
+        }
+        return stocks.filter {
+            $0.symbol.localizedCaseInsensitiveContains(searchText) ||
+            $0.name.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+
     var body: some View {
         NavigationStack {
-            
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        
-                    }) {
-                        Image(systemName: "plus.circle")
-                    }
-                    .padding(.horizontal, 16)
-                    .buttonStyle(.plain)
-                }
-                List {
-                    ForEach(stocks) { stock in
-                        StockCard(stock: stock, currentDate: currentDate)
-                            .listRowSeparator(.hidden)
-                    }
-                }
-                
-            }
-            .listRowSpacing(-12)
-            .listStyle(.plain)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    VStack(alignment: .leading) {
-                        Text("Stocks")
-                        Text(currentDate, format: .dateTime.day().month(.wide))
-                            .opacity(0.5)
-                    }
-                    .font(Font.title.bold())
-                    .frame(width: 200, alignment: .leading)
-                }
-                .sharedBackgroundVisibility(.hidden)
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    HStack {
-                        Button(action: { onForwardDay?() }) {
-                            Text("Forward 1 day")
-                                .font(.footnote)
-                            Image(systemName: "chevron.forward.2")
+            List {
+                ForEach(filteredStocks) { stock in
+                    StockCard(stock: stock, currentDate: currentDate)
+                        .listRowSeparator(.hidden)
+                        .onTapGesture {
+                            onSelect(stock)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.green)
-                    }
                 }
             }
+            .listStyle(.plain)
+            .searchable(text: $searchText, prompt: "Search symbol or name")
+            .navigationTitle("Select Stock")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
@@ -124,5 +95,5 @@ struct HomeView: View {
         .init(symbol: "NVDA", name: "NVIDIA Corporation"),
     ]
     
-    HomeView(currentDate: Date.now, stocks: stocks)
+    SelectStock(currentDate: Date.now, stocks: stocks, onSelect: { _ in })
 }
