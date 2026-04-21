@@ -36,9 +36,9 @@ struct StockCard: View {
 
             // generated
             Chart {
-                ForEach(stock.priceHistory, id: \.date) { item in
+                ForEach(stock.priceHistory, id: \.timestamp) { item in
                     AreaMark(
-                        x: .value("Date", item.date),
+                        x: .value("Date", item.timestamp),
                         y: .value("Price", item.price)
                     )
                     .foregroundStyle(
@@ -50,7 +50,7 @@ struct StockCard: View {
                     )
 
                     LineMark(
-                        x: .value("Date", item.date),
+                        x: .value("Date", item.timestamp),
                         y: .value("Price", item.price)
                     )
                     .foregroundStyle(statusColor)
