@@ -8,33 +8,64 @@ struct CompareChart: View {
     private var primaryData:   [ChartDataPoint] { normalizedData(for: primary) }
     private var secondaryData: [ChartDataPoint] { normalizedData(for: secondary) }
 
+    // Crosshair
+    @State private var selectedDate: Date? = nil
+    @State private var dragLocation: CGFloat = 0
+
     private func normalizedData(for stock: Stock) -> [ChartDataPoint] {
         let sorted = stock.priceHistory
             .sorted { $0.timestamp < $1.timestamp }
-
         guard let baseline = sorted.first?.price, baseline != 0 else { return [] }
-
         return sorted.map {
             ChartDataPoint(date: $0.timestamp, value: (($0.price - baseline) / baseline) * 100)
         }
     }
-    
+
     private var sharedStartDate: Date {
         let d1 = primary.priceHistory.map(\.timestamp).min() ?? .distantPast
         let d2 = secondary.priceHistory.map(\.timestamp).min() ?? .distantPast
         return max(d1, d2)
     }
 
+    private var sharedEndDate: Date {
+        primaryData.map(\.date).max() ?? Date()
+    }
+
+    // Nearest data point to selected date
+    private func nearestPoint(in data: [ChartDataPoint], to date: Date) -> ChartDataPoint? {
+        data.min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) })
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
 
             HStack(spacing: 16) {
-                LegendDot(color: .blue,   label: primary.symbol)
+                LegendDot(color: .blue, label: primary.symbol)
+                if let date = selectedDate,
+                   let point = nearestPoint(in: primaryData, to: date) {
+                    Text("\(point.value, specifier: "%+.2f")%")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.blue)
+                }
+
                 LegendDot(color: .yellow, label: secondary.symbol)
+                if let date = selectedDate,
+                   let point = nearestPoint(in: secondaryData, to: date) {
+                    Text("\(point.value, specifier: "%+.2f")%")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.yellow)
+                }
+
+                Spacer()
+
+                if let date = selectedDate {
+                    Text(date, format: .dateTime.month(.abbreviated).day())
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Chart {
-                // baseline
                 RuleMark(y: .value("Baseline", 0))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
                     .foregroundStyle(.secondary.opacity(0.4))
@@ -58,10 +89,37 @@ struct CompareChart: View {
                         y: .value("Change %", point.value)
                     )
                     .foregroundStyle(.yellow)
-                    .lineStyle(StrokeStyle(lineWidth: 2, dash: [6, 3]))
+                    .lineStyle(StrokeStyle(lineWidth: 3, dash: [6, 3]))
                     .interpolationMethod(.catmullRom)
                 }
                 .foregroundStyle(by: .value("Stock", secondary.symbol))
+
+                // Crosshair vertical rule
+                if let date = selectedDate {
+                    RuleMark(x: .value("Selected", date))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                        .foregroundStyle(.secondary.opacity(0.6))
+
+                    // Primary dot
+                    if let point = nearestPoint(in: primaryData, to: date) {
+                        PointMark(
+                            x: .value("Date", point.date),
+                            y: .value("Change %", point.value)
+                        )
+                        .symbolSize(60)
+                        .foregroundStyle(.blue)
+                    }
+
+                    // Secondary dot
+                    if let point = nearestPoint(in: secondaryData, to: date) {
+                        PointMark(
+                            x: .value("Date", point.date),
+                            y: .value("Change %", point.value)
+                        )
+                        .symbolSize(60)
+                        .foregroundStyle(.yellow)
+                    }
+                }
             }
             .chartLegend(.hidden)
             .chartXAxis {
@@ -78,8 +136,29 @@ struct CompareChart: View {
                     AxisGridLine()
                 }
             }
-            .chartXScale(domain: sharedStartDate...(primaryData.map(\.date).max() ?? Date()))
+            .chartXScale(domain: sharedStartDate...sharedEndDate)
             .clipped()
+            .chartOverlay { proxy in
+                GeometryReader { geo in
+                    Rectangle()
+                        .fill(Color.clear)
+                        .contentShape(Rectangle())
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { value in
+                                    let origin = geo[proxy.plotFrame!].origin
+                                    let x = value.location.x - origin.x
+                                    if let date: Date = proxy.value(atX: x) {
+                                        dragLocation = x
+                                        selectedDate = date
+                                    }
+                                }
+                                .onEnded { _ in
+                                    selectedDate = nil
+                                }
+                        )
+                }
+            }
         }
     }
 }
