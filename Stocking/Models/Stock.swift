@@ -21,7 +21,7 @@ class Stock: Identifiable {
     }
 
     func previousPrice(for date: Date) -> Double? {
-            priceHistory.last(where: { $0.date < date })?.price
+            priceHistory.last(where: { $0.timestamp < date })?.price
         }
 
         var change: Double {

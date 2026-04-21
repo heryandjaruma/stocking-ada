@@ -10,18 +10,18 @@ struct CompareChart: View {
 
     private func normalizedData(for stock: Stock) -> [ChartDataPoint] {
         let sorted = stock.priceHistory
-            .sorted { $0.date < $1.date }
+            .sorted { $0.timestamp < $1.timestamp }
 
         guard let baseline = sorted.first?.price, baseline != 0 else { return [] }
 
         return sorted.map {
-            ChartDataPoint(date: $0.date, value: (($0.price - baseline) / baseline) * 100)
+            ChartDataPoint(date: $0.timestamp, value: (($0.price - baseline) / baseline) * 100)
         }
     }
     
     private var sharedStartDate: Date {
-        let d1 = primary.priceHistory.map(\.date).min() ?? .distantPast
-        let d2 = secondary.priceHistory.map(\.date).min() ?? .distantPast
+        let d1 = primary.priceHistory.map(\.timestamp).min() ?? .distantPast
+        let d2 = secondary.priceHistory.map(\.timestamp).min() ?? .distantPast
         return max(d1, d2)
     }
 
