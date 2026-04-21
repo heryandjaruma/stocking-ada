@@ -4,11 +4,12 @@ import SwiftData
 @Model
 class PriceHistory: Identifiable {
     var id = UUID()
-    var date: Date
+    var timestamp: Date
     var price: Double
+    var stock: Stock?
     
-    init(date: Date, price: Double) {
-        self.date = date
+    init(timestamp: Date, price: Double) {
+        self.timestamp = timestamp
         self.price = price
     }
 }

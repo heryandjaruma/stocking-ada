@@ -4,6 +4,7 @@ import SwiftUI
 import Foundation
 
 struct PriceChart: View {
+//    var stock: Stock
     let data: [ChartDataPoint]
     var ruleDate: Date? = nil
 
@@ -132,21 +133,21 @@ private let previewBalanceData: [ChartDataPoint] = [
 
 import Foundation
 
-struct EquityRecord: Codable {
-    let totalEquity: Double
+struct PriceRecord: Codable {
+    let price: Double
     let timestamp: Date
 }
 
 #Preview("Balance History") {
-    let url = Bundle.main.url(forResource: "equityHistory", withExtension: "json")!
+    let url = Bundle.main.url(forResource: "WMT", withExtension: "json")!
     let data = try! Data(contentsOf: url)
     
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
-    let records = try! decoder.decode([EquityRecord].self, from: data)
+    let records = try! decoder.decode([PriceRecord].self, from: data)
     
     let chartData = records.map { record in
-        ChartDataPoint(date: record.timestamp, value: record.totalEquity)
+        ChartDataPoint(date: record.timestamp, value: record.price)
     }
     
     return VStack(alignment: .leading, spacing: 8) {

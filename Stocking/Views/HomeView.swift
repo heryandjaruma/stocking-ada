@@ -29,7 +29,7 @@ struct HomeView: View {
                 }
                 List {
                     ForEach(stocks) { stock in
-                        StockCard(stock: stock)
+                        StockCard(stock: stock, currentDate: currentDate)
                             .listRowSeparator(.hidden)
                     }
                 }
@@ -71,7 +71,7 @@ struct HomeView: View {
         .init(symbol: "AAPL", name: "Apple Inc.",
               priceHistory: [
                   PriceHistory(
-                      date: Calendar.current.date(
+                      timestamp: Calendar.current.date(
                           byAdding: .day,
                           value: -6,
                           to: Date()
@@ -79,7 +79,7 @@ struct HomeView: View {
                       price: 178.50
                   ),
                   PriceHistory(
-                      date: Calendar.current.date(
+                      timestamp: Calendar.current.date(
                           byAdding: .day,
                           value: -5,
                           to: Date()
@@ -87,7 +87,7 @@ struct HomeView: View {
                       price: 182.30
                   ),
                   PriceHistory(
-                      date: Calendar.current.date(
+                      timestamp: Calendar.current.date(
                           byAdding: .day,
                           value: -4,
                           to: Date()
@@ -95,7 +95,7 @@ struct HomeView: View {
                       price: 179.90
                   ),
                   PriceHistory(
-                      date: Calendar.current.date(
+                      timestamp: Calendar.current.date(
                           byAdding: .day,
                           value: -3,
                           to: Date()
@@ -103,7 +103,7 @@ struct HomeView: View {
                       price: 185.10
                   ),
                   PriceHistory(
-                      date: Calendar.current.date(
+                      timestamp: Calendar.current.date(
                           byAdding: .day,
                           value: -2,
                           to: Date()
@@ -111,14 +111,14 @@ struct HomeView: View {
                       price: 188.75
                   ),
                   PriceHistory(
-                      date: Calendar.current.date(
+                      timestamp: Calendar.current.date(
                           byAdding: .day,
                           value: -1,
                           to: Date()
                       )!,
                       price: 191.20
                   ),
-                  PriceHistory(date: Date(), price: 195.60),
+                  PriceHistory(timestamp: Date(), price: 195.60),
               ]
              ),
         .init(symbol: "MSFT", name: "Microsoft Corporation"),

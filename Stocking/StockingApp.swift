@@ -14,7 +14,9 @@ struct StockingApp: App {
         let schema = Schema([
             UserStockingData.self,
             EquityHistory.self,
-            GlobalConfig.self
+            GlobalConfig.self,
+            Stock.self,
+            PriceHistory.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -29,6 +31,7 @@ struct StockingApp: App {
     init() {
         seedEquityHistoryIfNeeded(context: sharedModelContainer.mainContext)
         seedGlobalConfigIfNeeded(context: sharedModelContainer.mainContext)
+        seedStockIfNeeded(context: sharedModelContainer.mainContext)
         seedBalanceIfNeeded(context: sharedModelContainer.mainContext)
     }
     
@@ -83,4 +86,49 @@ func seedBalanceIfNeeded(context: ModelContext) {
     
     let defaultUser = UserStockingData(totalEquity: 100.0, tradeableBalance: 100.0, investedBalance: 0.0)
     context.insert(defaultUser)
+}
+
+struct StockJSON: Codable {
+    let symbol: String
+    let name: String
+}
+func seedStockIfNeeded(context: ModelContext) {
+    let existing = try? context.fetch(FetchDescriptor<Stock>())
+    guard existing?.isEmpty == true else {
+        return
+    }
+    
+    let url = Bundle.main.url(forResource: "stock", withExtension: "json")!
+    let data = try! Data(contentsOf: url)
+    
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    let records = try! decoder.decode([StockJSON].self, from: data)
+
+    for recordS in records {
+        let tempStock = Stock(symbol: recordS.symbol, name: recordS.name)
+        context.insert(tempStock)
+        
+        let priceHistoryRecords = getPriceHistoryForSymbol(tempStock.symbol)
+        for recordPH in priceHistoryRecords {
+            let ph = PriceHistory(timestamp: recordPH.timestamp, price: recordPH.price)
+            tempStock.priceHistory.append(ph)
+        }
+    }
+
+    try! context.save()
+}
+
+struct PriceHistoryJSON: Codable {
+    let price: Double
+    let timestamp: Date
+}
+func getPriceHistoryForSymbol(_ symbol: String) -> [PriceHistoryJSON] {
+    let url = Bundle.main.url(forResource: symbol, withExtension: "json")!
+    let data = try! Data(contentsOf: url)
+    
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    let records = try! decoder.decode([PriceHistoryJSON].self, from: data)
+    return records
 }
