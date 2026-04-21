@@ -4,6 +4,7 @@ import SwiftUI
 import Foundation
 
 struct PriceChart: View {
+//    var stock: Stock
     let data: [ChartDataPoint]
     var ruleDate: Date? = nil
 

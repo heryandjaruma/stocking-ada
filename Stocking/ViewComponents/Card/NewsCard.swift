@@ -3,16 +3,17 @@ import SwiftUI
 
 struct NewsCard: View {
     var news: News
+    var currentDate: Date
 
     private var priceStatus: PriceStatus {
-        let change = news.stock.change
+        let change = news.stock.changeForDate(currentDate)
         if change > 0 { return .rising }
         if change < 0 { return .falling }
         return .neutral
     }
     
     private var priceSymbol: String {
-        let change = news.stock.change
+        let change = news.stock.changeForDate(currentDate)
         return change.isZero ? "" : (change > 0 ? "+" : "-")
     }
 
@@ -34,7 +35,7 @@ struct NewsCard: View {
                         )
                         .font(.system(size: 15, weight: .semibold))
 
-                        Text("\(priceSymbol)\(abs(news.stock.change), format: .number.precision(.fractionLength(2)))")
+                        Text("\(priceSymbol)\(abs(news.stock.changeForDate(currentDate)), format: .number.precision(.fractionLength(2)))")
                             .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(statusColor)
                     }
@@ -78,8 +79,8 @@ private func previewDate(_ offset: Int) -> Date {
         symbol: "AAPL",
         name: "Apple Inc.",
         priceHistory: [
-            PriceHistory(date: previewDate(-1), price: 196.46),
-            PriceHistory(date: previewDate(0), price: 198.87),
+            PriceHistory(timestamp: previewDate(-1), price: 196.46),
+            PriceHistory(timestamp: previewDate(0), price: 198.87),
         ]
     )
     NewsCard(
@@ -89,6 +90,6 @@ private func previewDate(_ offset: Int) -> Date {
             headline: "TSMC Posts Profit Beat Despite Middle East Conflict",
             desc:
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim..."
-        )
+        ), currentDate: Date.now
     )
 }

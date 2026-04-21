@@ -3,17 +3,14 @@ import SwiftUI
 
 struct StockDetailsView: View {
     var stock: Stock
+    var currentDate: Date
 
     @State private var selectedRange: String = "1D"
     private let ranges = ["1D", "1W", "1M"]
 
-    private var today: Date {
-        Calendar.current.startOfDay(for: Date())
-    }
-
     private var priceStatus: PriceStatus {
         guard let current = stock.priceHistory.last?.price else { return .neutral }
-        let previous = stock.previousPrice(for: today) ?? current
+        let previous = stock.previousPrice(date: currentDate) ?? current
         if current > previous { return .rising }
         if current < previous { return .falling }
         return .neutral
@@ -23,9 +20,9 @@ struct StockDetailsView: View {
 
     private var changePercent: Double {
         guard let current = stock.priceHistory.last?.price else { return 0 }
-        let previous = stock.previousPrice(for: today) ?? current
+        let previous = stock.previousPrice(date: currentDate) ?? current
         guard previous != 0 else { return 0 }
-        return (stock.change / previous) * 100
+        return (stock.changeForDate(currentDate) / previous) * 100
     }
 
     var body: some View {
@@ -60,7 +57,7 @@ struct StockDetailsView: View {
                             Image(systemName: priceStatus == .falling ? "arrow.down" :
                                              priceStatus == .rising  ? "arrow.up"   : "minus")
                                 .font(.system(size: 13, weight: .bold))
-                            Text("\(abs(stock.change), specifier: "%.2f")")
+                            Text("\(abs(stock.changeForDate(currentDate)), specifier: "%.2f")")
                             Text("(\(changePercent, specifier: "%.2f")%)")
                         }
                         .font(.system(size: 15, weight: .semibold))
@@ -111,14 +108,14 @@ private func previewDate(_ offset: Int) -> Date {
             symbol: "AAPL",
             name: "Apple Inc.",
             priceHistory: [
-                PriceHistory(date: previewDate(-6), price: 279.20),
-                PriceHistory(date: previewDate(-5), price: 418.20),
-                PriceHistory(date: previewDate(-4), price: 412.80),
-                PriceHistory(date: previewDate(-3), price: 416.50),
-                PriceHistory(date: previewDate(-2), price: 419.00),
-                PriceHistory(date: previewDate(-1), price: 420.00),
-                PriceHistory(date: previewDate(0),  price: 429.20),
+                PriceHistory(timestamp: previewDate(-6), price: 279.20),
+                PriceHistory(timestamp: previewDate(-5), price: 418.20),
+                PriceHistory(timestamp: previewDate(-4), price: 412.80),
+                PriceHistory(timestamp: previewDate(-3), price: 416.50),
+                PriceHistory(timestamp: previewDate(-2), price: 419.00),
+                PriceHistory(timestamp: previewDate(-1), price: 420.00),
+                PriceHistory(timestamp: previewDate(0),  price: 429.20),
             ]
-        ))
+        ), currentDate: Date.now)
     }
 }

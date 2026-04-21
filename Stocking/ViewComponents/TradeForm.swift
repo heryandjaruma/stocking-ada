@@ -196,8 +196,8 @@ private func previewDate(_ offset: Int) -> Date {
             TradeForm(stock: Stock(
                 symbol: "AAPL", name: "Apple Inc.",
                 priceHistory: [
-                    PriceHistory(date: previewDate(-1), price: 256.00),
-                    PriceHistory(date: previewDate(0), price: 259.20),
+                    PriceHistory(timestamp: previewDate(-1), price: 256.00),
+                    PriceHistory(timestamp: previewDate(0), price: 259.20),
                 ]
             ), ownedLots: 0)
 
@@ -207,8 +207,8 @@ private func previewDate(_ offset: Int) -> Date {
             TradeForm(stock: Stock(
                 symbol: "AAPL", name: "Apple Inc.",
                 priceHistory: [
-                    PriceHistory(date: previewDate(-1), price: 256.00),
-                    PriceHistory(date: previewDate(0), price: 259.20),
+                    PriceHistory(timestamp: previewDate(-1), price: 256.00),
+                    PriceHistory(timestamp: previewDate(0), price: 259.20),
                 ]
             ), ownedLots: 6)
         }
