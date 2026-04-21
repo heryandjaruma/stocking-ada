@@ -30,6 +30,7 @@ struct HomeView: View {
                 List {
                     ForEach(stocks) { stock in
                         StockCard(stock: stock, currentDate: currentDate)
+                            .equatable() /// to check if same then prevent rerender
                             .listRowSeparator(.hidden)
                     }
                 }

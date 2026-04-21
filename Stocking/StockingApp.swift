@@ -32,6 +32,7 @@ struct StockingApp: App {
         seedEquityHistoryIfNeeded(context: sharedModelContainer.mainContext)
         seedGlobalConfigIfNeeded(context: sharedModelContainer.mainContext)
         seedStockIfNeeded(context: sharedModelContainer.mainContext)
+        seedBalanceIfNeeded(context: sharedModelContainer.mainContext)
     }
     
     var body: some Scene {
@@ -41,7 +42,6 @@ struct StockingApp: App {
         .modelContainer(sharedModelContainer)
     }
 }
-
 
 // MARK: - Some initials data
 
@@ -77,6 +77,15 @@ func seedEquityHistoryIfNeeded(context: ModelContext) {
     }
 
     try! context.save()
+}
+
+/// INITIAL BALANCE
+func seedBalanceIfNeeded(context: ModelContext) {
+    let existing = try? context.fetch(FetchDescriptor<UserStockingData>())
+    guard existing?.isEmpty == true else { return }
+    
+    let defaultUser = UserStockingData(totalEquity: 100.0, tradeableBalance: 100.0, investedBalance: 0.0)
+    context.insert(defaultUser)
 }
 
 struct StockJSON: Codable {
