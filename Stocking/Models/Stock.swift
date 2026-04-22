@@ -29,20 +29,15 @@ class Stock: Identifiable {
         priceHistory.last(where: { $0.timestamp < date })?.price
     }
 
-    func changeForDate(_ date: Date) -> Double {
+    func changeForDate(_ date: Date, _ daysBack: Date? = nil) -> Double {
         let calendar = Calendar.current
-        let currentDate = date
-        let previousDate = Calendar.current.date(
-            byAdding: .day,
-            value: -1,
-            to: currentDate
-        )!
-        
-        if let currentPrice = priceHistory.first(where: { calendar.isDate($0.timestamp, inSameDayAs: currentDate) })?.price,
+        let previousDate = daysBack ?? Calendar.current.date(byAdding: .day, value: -1, to: date)!
+
+        if let currentPrice = priceHistory.first(where: { calendar.isDate($0.timestamp, inSameDayAs: date) })?.price,
            let previousPrice = priceHistory.first(where: { calendar.isDate($0.timestamp, inSameDayAs: previousDate) })?.price {
             return currentPrice - previousPrice
         }
-        
+
         return 0
     }
 }
