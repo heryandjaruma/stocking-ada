@@ -41,7 +41,7 @@ struct PriceChart: View {
                 )
                 .foregroundStyle(trendColor)
                 .lineStyle(StrokeStyle(lineWidth: 2))
-                .interpolationMethod(.catmullRom)
+                .interpolationMethod(.cardinal)
             }
 
             if let ruleDate {
