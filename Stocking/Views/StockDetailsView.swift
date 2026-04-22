@@ -59,7 +59,7 @@ struct StockDetailsView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 20)
 
-                // MARK: Price + change
+                //Price + change
                 VStack(alignment: .leading, spacing: 4) {
                     Text("$\(timeRangedStockPriceHistory.last?.price ?? 0, specifier: "%.2f")")
                         .font(.system(size: 28, weight: .bold))
