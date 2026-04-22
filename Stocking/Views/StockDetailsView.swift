@@ -51,9 +51,10 @@ struct StockDetailsView: View {
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
-                    Image(systemName: "apple.logo")
-                        .font(.system(size: 44))
-                        .foregroundStyle(.secondary)
+                    Image("\(stock.symbol)")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 69, height: 69)
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 16)
@@ -128,7 +129,7 @@ private func previewDate(_ offset: Int) -> Date {
 #Preview {
     NavigationStack {
         StockDetailsView(stock: Stock(
-            symbol: "AAPL",
+            symbol: "TSM",
             name: "Apple Inc.",
             priceHistory: [
                 PriceHistory(timestamp: previewDate(-6), price: 279.20),

@@ -2,7 +2,7 @@ import SwiftData
 import SwiftUI
 
 @Model
-class Stock: Identifiable {
+class Stock: Identifiable, Hashable {
     var id = UUID()
     var symbol: String
     var name: String
