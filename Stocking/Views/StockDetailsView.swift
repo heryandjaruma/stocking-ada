@@ -7,23 +7,35 @@ struct StockDetailsView: View {
     
     @State private var selectedRange: ChartRange = .oneMonth
     @State private var selectedDate: Date? = nil
-
+    
+    private var timeRangedStockPriceHistory: [PriceHistory] {
+        let someTimeAgo: Date = selectedRange.startDate(from: currentDate)
+        return stock.sortedPriceHistory.filter {
+            $0.timestamp >= someTimeAgo && $0.timestamp <= currentDate
+        }
+    }
+    
+    private var timeRangedChartDataPoint: [ChartDataPoint] {
+        return timeRangedStockPriceHistory.map { priceHistory in
+            ChartDataPoint(date: priceHistory.timestamp, value: priceHistory.price)
+        }
+    }
+    
+    private var changePercent: Double {
+        guard let current = timeRangedStockPriceHistory.last?.price else { return 0 }
+        let previous = timeRangedStockPriceHistory.last(where: { $0.timestamp < currentDate })?.price ?? current /// default to current if no previous price is found (maybe the case if it's the first day)
+        guard previous != 0 else { return 0 }
+        return (stock.changeForDate(currentDate, selectedRange.startDate(from: currentDate)) / previous) * 100
+    }
+    
     private var priceStatus: PriceStatus {
-        guard let current = stock.priceHistory.last?.price else { return .neutral }
-        let previous = stock.previousPrice(date: currentDate) ?? current
-        if current > previous { return .rising }
-        if current < previous { return .falling }
+        let change = stock.changeForDate(currentDate, selectedRange.startDate(from: currentDate))
+        if change > 0 { return .rising }
+        if change < 0 { return .falling }
         return .neutral
     }
-
+    
     private var statusColor: Color { priceStatus.color }
-
-    private var changePercent: Double {
-        guard let current = stock.priceHistory.last?.price else { return 0 }
-        let previous = stock.previousPrice(date: currentDate) ?? current
-        guard previous != 0 else { return 0 }
-        return (stock.changeForDate(currentDate) / previous) * 100
-    }
 
     var body: some View {
         ScrollView {
@@ -49,7 +61,7 @@ struct StockDetailsView: View {
 
                 //Price + change
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("$\(stock.priceHistory.last?.price ?? 0, specifier: "%.2f")")
+                    Text("$\(timeRangedStockPriceHistory.last?.price ?? 0, specifier: "%.2f")")
                         .font(.system(size: 28, weight: .bold))
 
                     HStack(spacing: 6) {
@@ -57,15 +69,11 @@ struct StockDetailsView: View {
                             Image(systemName: priceStatus == .falling ? "arrow.down" :
                                              priceStatus == .rising  ? "arrow.up"   : "minus")
                                 .font(.system(size: 13, weight: .bold))
-                            Text("\(abs(stock.changeForDate(currentDate)), specifier: "%.2f")")
+                            Text("\(abs(stock.changeForDate(currentDate, selectedRange.startDate(from: currentDate))), specifier: "%.2f")")
                             Text("(\(changePercent, specifier: "%.2f")%)")
                         }
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(statusColor)
-
-                        Text("Today")
-                            .font(.system(size: 15))
-                            .foregroundStyle(.primary)
 
                         Spacer()
 
@@ -73,10 +81,10 @@ struct StockDetailsView: View {
                         HStack(spacing: 4) {
                             ForEach(ChartRange.allCases, id: \.self) { range in
                                 Button(range.rawValue) {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        selectedRange = range
-                                        selectedDate = nil
-                                    }
+                                    selectedRange = range
+                                    selectedDate = nil
+//                                    withAnimation(.interpolatingSpring) {
+//                                    }
                                 }
                                 .font(.system(size: 12, weight: selectedRange == range ? .bold : .regular))
                                 .foregroundStyle(selectedRange == range ? .primary : .secondary)
@@ -94,8 +102,8 @@ struct StockDetailsView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 16)
 
-                // MARK: Chart
-                PriceChart(data: stock.chartData)
+                // MARK: Chart — padded to match screen margins
+                PriceChart(data: timeRangedChartDataPoint)
                     .frame(maxWidth: .infinity)
                     .frame(height: 220)
                     .padding(.horizontal, 24)
