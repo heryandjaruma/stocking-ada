@@ -47,7 +47,7 @@ struct StockDetailsView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 20)
 
-                // MARK: Price + change
+                //Price + change
                 VStack(alignment: .leading, spacing: 4) {
                     Text("$\(stock.priceHistory.last?.price ?? 0, specifier: "%.2f")")
                         .font(.system(size: 28, weight: .bold))
@@ -94,7 +94,7 @@ struct StockDetailsView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 16)
 
-                // MARK: Chart — padded to match screen margins
+                // MARK: Chart
                 PriceChart(data: stock.chartData)
                     .frame(maxWidth: .infinity)
                     .frame(height: 220)
