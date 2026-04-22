@@ -11,9 +11,11 @@ struct CompareChart: View {
 
     // MARK: - Data
 
+    
+    /// Normalize data relative to the first price to be comparable
     private func normalizedData(for stock: Stock) -> [ChartDataPoint] {
         let sorted = stock.priceHistory.sorted { $0.timestamp < $1.timestamp }
-        guard let baseline = sorted.first?.price, baseline != 0 else { return [] }
+        guard let baseline = sorted.first?.price, baseline != 0 else { return [] } /// Relative to the very first data point
         return sorted.map {
             ChartDataPoint(date: $0.timestamp, value: (($0.price - baseline) / baseline) * 100)
         }
