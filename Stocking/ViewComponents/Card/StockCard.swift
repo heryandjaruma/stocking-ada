@@ -95,5 +95,5 @@ struct StockCard: View, Equatable {
 }
 
 //#Preview {
-//    StockCard(stock: Stock, currentDate: <#T##Date#>)
+//    StockCard(stock: Stock, currentDate: Date.now)
 //}

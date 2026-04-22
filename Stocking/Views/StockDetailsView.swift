@@ -4,9 +4,9 @@ import SwiftUI
 struct StockDetailsView: View {
     var stock: Stock
     var currentDate: Date
-
-    @State private var selectedRange: String = "1D"
-    private let ranges = ["1D", "1W", "1M"]
+    
+    @State private var selectedRange: ChartRange = .oneMonth
+    @State private var selectedDate: Date? = nil
 
     private var priceStatus: PriceStatus {
         guard let current = stock.priceHistory.last?.price else { return .neutral }
@@ -69,11 +69,26 @@ struct StockDetailsView: View {
 
                         Spacer()
 
-                        Picker("Range", selection: $selectedRange) {
-                            ForEach(ranges, id: \.self) { Text($0).tag($0) }
+                        // Filter Range
+                        HStack(spacing: 4) {
+                            ForEach(ChartRange.allCases, id: \.self) { range in
+                                Button(range.rawValue) {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        selectedRange = range
+                                        selectedDate = nil
+                                    }
+                                }
+                                .font(.system(size: 12, weight: selectedRange == range ? .bold : .regular))
+                                .foregroundStyle(selectedRange == range ? .primary : .secondary)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(
+                                    selectedRange == range
+                                        ? RoundedRectangle(cornerRadius: 6).fill(.secondary.opacity(0.2))
+                                        : nil
+                                )
+                            }
                         }
-                        .pickerStyle(.segmented)
-                        .frame(width: 120)
                     }
                 }
                 .padding(.horizontal, 24)

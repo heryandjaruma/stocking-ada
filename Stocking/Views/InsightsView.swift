@@ -40,7 +40,7 @@ struct InsightsView: View {
                 }
 
                 if let primary = primaryStock, let secondary = secondaryStock {
-                    CompareChart(primary: primary, secondary: secondary)
+                    CompareChart(primary: primary, secondary: secondary, appToday: currentDate)
                         .frame(height: 260)
                         .padding(14)
                 } else {
