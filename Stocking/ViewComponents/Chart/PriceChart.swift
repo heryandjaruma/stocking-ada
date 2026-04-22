@@ -53,15 +53,24 @@ struct PriceChart: View {
         .chartXAxis {
             AxisMarks { value in
                 AxisValueLabel()
-                    .font(.system(size: 11))
+                    .font(.system(size: 11).bold())
+
                 AxisGridLine()
+                    .foregroundStyle(.gray.opacity(0.5))
             }
         }
+
         .chartYAxis {
             AxisMarks(position: .trailing) { value in
-                AxisValueLabel()
-                    .font(.system(size: 11))
+                AxisValueLabel {
+                    if let v = value.as(Double.self) {
+                        Text("\(v, specifier: "%.0f")")
+                            .font(.system(size: 11).bold())
+                    }
+                }
+
                 AxisGridLine()
+                    .foregroundStyle(.gray.opacity(0.5))
             }
         }
         .chartYScale(domain: chartYDomain)
@@ -81,7 +90,7 @@ struct PriceChart: View {
               let max = data.map(\.value).max(),
               min != max
         else { return 0...1 }
-        let padding = (max - min) * 0.3
+        let padding = (max - min) * 0.1
         return (min - padding)...(max + padding)
     }
 }

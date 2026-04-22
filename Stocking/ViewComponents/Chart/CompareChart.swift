@@ -4,53 +4,78 @@ import SwiftUI
 struct CompareChart: View {
     let primary: Stock
     let secondary: Stock
+    var appToday: Date = Date()
 
-    private var primaryData:   [ChartDataPoint] { normalizedData(for: primary) }
-    private var secondaryData: [ChartDataPoint] { normalizedData(for: secondary) }
-
-    // Crosshair
+    @State private var selectedRange: ChartRange = .oneMonth
     @State private var selectedDate: Date? = nil
-    @State private var dragLocation: CGFloat = 0
+
+    // MARK: - Data
 
     private func normalizedData(for stock: Stock) -> [ChartDataPoint] {
-        let sorted = stock.priceHistory
-            .sorted { $0.timestamp < $1.timestamp }
+        let sorted = stock.priceHistory.sorted { $0.timestamp < $1.timestamp }
         guard let baseline = sorted.first?.price, baseline != 0 else { return [] }
         return sorted.map {
             ChartDataPoint(date: $0.timestamp, value: (($0.price - baseline) / baseline) * 100)
         }
     }
 
-    private var sharedStartDate: Date {
-        let d1 = primary.priceHistory.map(\.timestamp).min() ?? .distantPast
-        let d2 = secondary.priceHistory.map(\.timestamp).min() ?? .distantPast
-        return max(d1, d2)
+    private func rangedData(for stock: Stock) -> [ChartDataPoint] {
+        let all = normalizedData(for: stock)
+        let filtered = selectedRange.filtered(all, appToday: appToday)
+        return filtered.isEmpty ? all : filtered // fallback to all if not enough history
     }
 
-    private var sharedEndDate: Date {
-        primaryData.map(\.date).max() ?? Date()
+    private var primaryData:   [ChartDataPoint] { rangedData(for: primary) }
+    private var secondaryData: [ChartDataPoint] { rangedData(for: secondary) }
+
+    // MARK: - Unified Series
+
+    struct SeriesPoint: Identifiable {
+        let id = UUID()
+        let date: Date
+        let value: Double
+        let series: String
     }
 
-    // Nearest data point to selected date
+    private var combinedData: [SeriesPoint] {
+        primaryData.map   { SeriesPoint(date: $0.date, value: $0.value, series: primary.symbol) } +
+        secondaryData.map { SeriesPoint(date: $0.date, value: $0.value, series: secondary.symbol) }
+    }
+
+    // MARK: - Domain
+
+    private var sharedStartDate: Date { combinedData.map(\.date).min() ?? .distantPast }
+    private var sharedEndDate:   Date { combinedData.map(\.date).max() ?? Date() }
+
+    private var chartYDomain: ClosedRange<Double> {
+        let values = combinedData.map(\.value)
+        guard let min = values.min(), let max = values.max(), min != max else { return -1...1 }
+        let padding = (max - min) * 0.2
+        return (min - padding)...(max + padding)
+    }
+
+    // MARK: - Crosshair
+
     private func nearestPoint(in data: [ChartDataPoint], to date: Date) -> ChartDataPoint? {
-        data.min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) })
+        data.min { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }
     }
+
+    // MARK: - View
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
 
+            // Legend + crosshair values
             HStack(spacing: 16) {
                 LegendDot(color: .blue, label: primary.symbol)
-                if let date = selectedDate,
-                   let point = nearestPoint(in: primaryData, to: date) {
+                if let date = selectedDate, let point = nearestPoint(in: primaryData, to: date) {
                     Text("\(point.value, specifier: "%+.2f")%")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.blue)
                 }
 
                 LegendDot(color: .yellow, label: secondary.symbol)
-                if let date = selectedDate,
-                   let point = nearestPoint(in: secondaryData, to: date) {
+                if let date = selectedDate, let point = nearestPoint(in: secondaryData, to: date) {
                     Text("\(point.value, specifier: "%+.2f")%")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.yellow)
@@ -59,89 +84,93 @@ struct CompareChart: View {
                 Spacer()
 
                 if let date = selectedDate {
-                    Text(date, format: .dateTime.month(.abbreviated).day())
+                    Text(date, format: .dateTime.month().day())
                         .font(.system(size: 12))
                         .foregroundStyle(.secondary)
+                }
+            }
+
+            // Range picker
+            HStack(spacing: 4) {
+                ForEach(ChartRange.allCases, id: \.self) { range in
+                    Button(range.rawValue) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            selectedRange = range
+                            selectedDate = nil
+                        }
+                    }
+                    .font(.system(size: 12, weight: selectedRange == range ? .bold : .regular))
+                    .foregroundStyle(selectedRange == range ? .primary : .secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        selectedRange == range
+                            ? RoundedRectangle(cornerRadius: 6).fill(.secondary.opacity(0.2))
+                            : nil
+                    )
                 }
             }
 
             Chart {
                 RuleMark(y: .value("Baseline", 0))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
-                    .foregroundStyle(.secondary.opacity(0.4))
+                    .foregroundStyle(.secondary.opacity(0.3))
 
-                // Primary stock
-                ForEach(primaryData.filter { $0.date >= sharedStartDate }) { point in
+                ForEach(combinedData) { point in
                     LineMark(
                         x: .value("Date", point.date),
                         y: .value("Change %", point.value)
                     )
-                    .foregroundStyle(.blue)
-                    .lineStyle(StrokeStyle(lineWidth: 2))
                     .interpolationMethod(.catmullRom)
+                    .lineStyle(StrokeStyle(
+                        lineWidth: 2,
+                        dash: point.series == secondary.symbol ? [6, 3] : []
+                    ))
+                    .foregroundStyle(by: .value("Stock", point.series))
                 }
-                .foregroundStyle(by: .value("Stock", primary.symbol))
 
-                // Secondary stock
-                ForEach(secondaryData.filter { $0.date >= sharedStartDate }) { point in
-                    LineMark(
-                        x: .value("Date", point.date),
-                        y: .value("Change %", point.value)
-                    )
-                    .foregroundStyle(.yellow)
-                    .lineStyle(StrokeStyle(lineWidth: 3, dash: [6, 3]))
-                    .interpolationMethod(.catmullRom)
-                }
-                .foregroundStyle(by: .value("Stock", secondary.symbol))
-
-                // Crosshair vertical rule
                 if let date = selectedDate {
                     RuleMark(x: .value("Selected", date))
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
-                        .foregroundStyle(.secondary.opacity(0.6))
+                        .foregroundStyle(.secondary.opacity(0.5))
 
-                    // Primary dot
-                    if let point = nearestPoint(in: primaryData, to: date) {
-                        PointMark(
-                            x: .value("Date", point.date),
-                            y: .value("Change %", point.value)
-                        )
-                        .symbolSize(60)
-                        .foregroundStyle(.blue)
-                    }
-
-                    // Secondary dot
-                    if let point = nearestPoint(in: secondaryData, to: date) {
-                        PointMark(
-                            x: .value("Date", point.date),
-                            y: .value("Change %", point.value)
-                        )
-                        .symbolSize(60)
-                        .foregroundStyle(.yellow)
+                    ForEach([primary, secondary], id: \.symbol) { stock in
+                        let data = stock.symbol == primary.symbol ? primaryData : secondaryData
+                        if let point = nearestPoint(in: data, to: date) {
+                            PointMark(
+                                x: .value("Date", point.date),
+                                y: .value("Change %", point.value)
+                            )
+                            .symbolSize(40)
+                            .foregroundStyle(by: .value("Stock", stock.symbol))
+                        }
                     }
                 }
             }
+            .chartForegroundStyleScale([primary.symbol: Color.blue, secondary.symbol: Color.yellow])
             .chartLegend(.hidden)
             .chartXAxis {
-                AxisMarks { AxisValueLabel().font(.system(size: 11)); AxisGridLine() }
+                AxisMarks { value in
+                    AxisValueLabel().font(.system(size: 11).bold())
+                    AxisGridLine().foregroundStyle(.gray.opacity(0.4))
+                }
             }
             .chartYAxis {
                 AxisMarks(position: .trailing) { value in
                     AxisValueLabel {
                         if let v = value.as(Double.self) {
-                            Text("\(v, specifier: "%.1f")%")
-                                .font(.system(size: 11))
+                            Text("\(v, specifier: "%.1f")%").font(.system(size: 11).bold())
                         }
                     }
-                    AxisGridLine()
+                    AxisGridLine().foregroundStyle(.gray.opacity(0.4))
                 }
             }
             .chartXScale(domain: sharedStartDate...sharedEndDate)
-            .clipped()
+            .chartYScale(domain: chartYDomain)
             .chartOverlay { proxy in
                 GeometryReader { geo in
                     Rectangle()
-                        .fill(Color.clear)
+                        .fill(.clear)
                         .contentShape(Rectangle())
                         .gesture(
                             DragGesture(minimumDistance: 0)
@@ -149,19 +178,18 @@ struct CompareChart: View {
                                     let origin = geo[proxy.plotFrame!].origin
                                     let x = value.location.x - origin.x
                                     if let date: Date = proxy.value(atX: x) {
-                                        dragLocation = x
                                         selectedDate = date
                                     }
                                 }
-                                .onEnded { _ in
-                                    selectedDate = nil
-                                }
+                                .onEnded { _ in selectedDate = nil }
                         )
                 }
             }
         }
     }
 }
+
+// MARK: - Legend Dot
 
 private struct LegendDot: View {
     let color: Color
@@ -172,36 +200,4 @@ private struct LegendDot: View {
             Text(label).font(.system(size: 13, weight: .semibold))
         }
     }
-}
-
-// MARK: - Preview
-
-private func previewDate(_ offset: Int) -> Date {
-    Calendar.current.date(byAdding: .day, value: offset, to: Date())!
-}
-
-#Preview {
-    let aapl = Stock(symbol: "AAPL", name: "Apple Inc.", priceHistory: [
-        PriceHistory(timestamp: previewDate(-6), price: 170.00),
-        PriceHistory(timestamp: previewDate(-5), price: 173.50),
-        PriceHistory(timestamp: previewDate(-4), price: 171.20),
-        PriceHistory(timestamp: previewDate(-3), price: 176.80),
-        PriceHistory(timestamp: previewDate(-2), price: 180.10),
-        PriceHistory(timestamp: previewDate(-1), price: 178.90),
-        PriceHistory(timestamp: previewDate(0),  price: 182.30),
-    ])
-
-    let msft = Stock(symbol: "MSFT", name: "Microsoft Corp.", priceHistory: [
-        PriceHistory(timestamp: previewDate(-6), price: 415.00),
-        PriceHistory(timestamp: previewDate(-5), price: 412.30),
-        PriceHistory(timestamp: previewDate(-4), price: 418.60),
-        PriceHistory(timestamp: previewDate(-3), price: 420.00),
-        PriceHistory(timestamp: previewDate(-2), price: 416.50),
-        PriceHistory(timestamp: previewDate(-1), price: 422.10),
-        PriceHistory(timestamp: previewDate(0),  price: 419.80),
-    ])
-
-    CompareChart(primary: aapl, secondary: msft)
-        .frame(height: 260)
-        .padding(24)
 }
