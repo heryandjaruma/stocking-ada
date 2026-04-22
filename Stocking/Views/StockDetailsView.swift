@@ -36,6 +36,9 @@ struct StockDetailsView: View {
     }
     
     private var statusColor: Color { priceStatus.color }
+    
+    /// Optional callback for buying stocks
+    var onBuyOrSell: ((Order, OwnedStock) -> Void)? = nil
 
     var body: some View {
         ScrollView {
@@ -113,7 +116,7 @@ struct StockDetailsView: View {
                     .padding(.vertical, 16)
 
                 // MARK: Trade form
-                TradeForm(stock: stock, ownedLots: 0)
+                TradeForm(stock: stock, currentDate: currentDate, ownedLots: 0)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -129,7 +132,7 @@ private func previewDate(_ offset: Int) -> Date {
 #Preview {
     NavigationStack {
         StockDetailsView(stock: Stock(
-            symbol: "TSM",
+            symbol: "AAPL",
             name: "Apple Inc.",
             priceHistory: [
                 PriceHistory(timestamp: previewDate(-6), price: 279.20),

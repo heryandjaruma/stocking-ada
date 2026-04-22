@@ -12,6 +12,7 @@ struct HomeView: View {
     var stocks: [Stock] = []
 
     var onForwardDay: (() -> Void)? = nil  // optional callback param
+    var onBuyOrSell: ((Order, OwnedStock) -> Void)? = nil
     
     @State private var selectedStock: Stock? = nil
 
@@ -20,7 +21,6 @@ struct HomeView: View {
             VStack {
                 List {
                     ForEach(stocks) { stock in
-                        
                         StockCard(stock: stock, currentDate: currentDate)
                             .equatable()
                             .onTapGesture {
@@ -30,7 +30,7 @@ struct HomeView: View {
                     }
                 }
                 .navigationDestination(item: $selectedStock, destination: { stock in
-                    StockDetailsView(stock: stock, currentDate: currentDate)
+                    StockDetailsView(stock: stock, currentDate: currentDate, onBuyOrSell: onBuyOrSell)
                         .toolbarVisibility(.hidden, for: .tabBar)
                 })
                 .listStyle(.plain)
