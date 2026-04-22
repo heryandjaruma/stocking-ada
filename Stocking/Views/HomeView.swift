@@ -39,6 +39,7 @@ struct HomeView: View {
                                 .equatable()
                         }
                         .listRowSeparator(.hidden)
+                        .buttonStyle(.plain)
                     }
                 }
                 .listStyle(.plain)

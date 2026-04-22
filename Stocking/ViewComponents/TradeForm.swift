@@ -1,20 +1,14 @@
 import SwiftUI
 
-enum OrderSide {
-    case buy, sell
-}
 
-enum OrderType: String, CaseIterable {
-    case limit = "Limit"
-    case market = "Market"
-}
 
 struct TradeForm: View {
     var stock: Stock
+    var currentDate: Date = Date()
 
     @State private var orderSide: OrderSide = .buy
     @State private var orderType: OrderType = .limit
-    @State private var price: Int = 260
+    @State private var price: Double = 260
     @State private var lot: Int = 1
 
     private var expiryOptions = ["Good For Day", "Good Till Canceled"]
@@ -70,7 +64,7 @@ struct TradeForm: View {
                     Divider().padding(.leading, 16)
                 }
 
-                StepperRow(label: "Lot", value: $lot, step: 1, minimum: 1)
+                IntStepperRow(label: "Lot", value: $lot, step: 1, minimum: 1)
 
                 if orderType == .limit {
                     Divider().padding(.leading, 16)
@@ -84,10 +78,28 @@ struct TradeForm: View {
 
             // MARK: Action buttons
             if orderSide == .buy {
-                ActionButton(label: "Buy", color: .green) { }
+                ActionButton(label: "Buy", color: .green) {
+                    Order(
+                        timestamp: currentDate,
+                        quantity: lot,
+                        price: price,
+                        orderType: orderType.rawValue,
+                        side: orderSide.rawValue
+                    )
+                    OwnedStock(id: UUID(), timestamp: currentDate, stock: stock)
+                }
             } else {
                 HStack(spacing: 12) {
-                    ActionButton(label: "Sell", color: .red) { }
+                    ActionButton(label: "Sell", color: .red) {
+                        Order(
+                            timestamp: currentDate,
+                            quantity: lot,
+                            price: price,
+                            orderType: orderType.rawValue,
+                            side: orderSide.rawValue
+                        )
+                        OwnedStock(id: UUID(), timestamp: currentDate, stock: stock)
+                    }
                     ActionButton(label: "Buy", color: .green) { }
                 }
             }
@@ -97,6 +109,40 @@ struct TradeForm: View {
     }
 }
 private struct StepperRow: View {
+    let label: String
+    @Binding var value: Double
+    var step: Double = 1
+    var minimum: Double = 0
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 15))
+            Spacer()
+            Button { if value - step >= minimum { value -= step } } label: {
+                Image(systemName: "minus")
+                    .frame(width: 28, height: 28)
+                    .background(Circle().fill(Color(.systemGray5)))
+            }
+            .buttonStyle(.plain)
+
+            Text("\(value)")
+                .font(.system(size: 15, weight: .semibold))
+                .frame(minWidth: 44, alignment: .center)
+
+            Button { value += step } label: {
+                Image(systemName: "plus")
+                    .frame(width: 28, height: 28)
+                    .background(Circle().fill(Color(.systemGray5)))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+    }
+}
+
+private struct IntStepperRow: View {
     let label: String
     @Binding var value: Int
     var step: Int = 1

@@ -34,7 +34,6 @@ struct StockCard: View, Equatable {
 
             Spacer()
 
-            // generated
             Chart {
                 ForEach(timeRangedStockPriceHistory, id: \.timestamp) { item in
                     AreaMark(
