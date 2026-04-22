@@ -19,6 +19,14 @@ struct StockCard: View, Equatable {
             $0.timestamp >= someTimeAgo && $0.timestamp <= currentDate
         }
     }
+    
+    func calculateAveragePrice() -> Double {
+        var total = 0.0
+        for priceHistory in timeRangedStockPriceHistory {
+            total += priceHistory.price
+        }
+        return total / Double(timeRangedStockPriceHistory.count)
+    }
 
     var body: some View {
         HStack {
@@ -55,7 +63,7 @@ struct StockCard: View, Equatable {
                     .foregroundStyle(statusColor)
                 }
 
-                RuleMark(y: .value("Threshold", 200))
+                RuleMark(y: .value("Threshold", self.calculateAveragePrice()))
                     .lineStyle(StrokeStyle(lineWidth: 2, dash: [10, 5]))
                     .foregroundStyle(statusColor.opacity(0.6))
             }
@@ -93,6 +101,16 @@ struct StockCard: View, Equatable {
     }
 }
 
-//#Preview {
-//    StockCard(stock: Stock, currentDate: Date.now)
-//}
+#Preview {
+    let priceHistories = [
+        PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -1, to: Date.now)!, price: 100.0),
+        PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -2, to: Date.now)!, price: 104.0),
+        PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -3, to: Date.now)!, price: 102.0),
+        PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -4, to: Date.now)!, price: 106.0),
+        PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -5, to: Date.now)!, price: 104.0),
+        PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -6, to: Date.now)!, price: 107.0),
+        PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -7, to: Date.now)!, price: 108.0),
+    ]
+    let stock = Stock(symbol: "AAPL", name: "Apple Inc.", priceHistory: priceHistories)
+    StockCard(stock: stock, currentDate: Date.now)
+}

@@ -12,36 +12,27 @@ struct HomeView: View {
     var stocks: [Stock] = []
 
     var onForwardDay: (() -> Void)? = nil  // optional callback param
+    
+    @State private var selectedStock: Stock? = nil
 
     var body: some View {
         NavigationStack {
-
             VStack {
-                HStack {
-                    Spacer()
-                    Button(action: {
-
-                    }) {
-                        Image(systemName: "plus.circle")
-                    }
-                    .padding(.horizontal, 16)
-                    .buttonStyle(.plain)
-                }
                 List {
                     ForEach(stocks) { stock in
-                        NavigationLink(
-                            destination: StockDetailsView(
-                                stock: stock,
-                                currentDate: currentDate
-                            )
-                        ) {
-                            StockCard(stock: stock, currentDate: currentDate)
-                                .equatable()
-                        }
-                        .listRowSeparator(.hidden)
-                        .buttonStyle(.plain)
+                        
+                        StockCard(stock: stock, currentDate: currentDate)
+                            .equatable()
+                            .onTapGesture {
+                                selectedStock = stock
+                            }
+                            .listRowSeparator(.hidden)
                     }
                 }
+                .navigationDestination(item: $selectedStock, destination: { stock in
+                    StockDetailsView(stock: stock, currentDate: currentDate)
+                        .toolbarVisibility(.hidden, for: .tabBar)
+                })
                 .listStyle(.plain)
             }
             .listRowSpacing(-12)
@@ -49,7 +40,7 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     VStack(alignment: .leading) {
-                        Text("Stocks")
+                        Text("Stocking")
                         Text(currentDate, format: .dateTime.day().month(.wide))
                             .opacity(0.5)
                     }
