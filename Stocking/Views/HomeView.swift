@@ -17,7 +17,7 @@ struct HomeView: View {
     @State private var selectedStock: Stock? = nil
     
     /// To be passed by parent for transaction error
-    @Binding var transactionError: TransactionError?
+    @Binding var transactionAlert: TransactionAlert?
 
     var body: some View {
         NavigationStack {
@@ -33,7 +33,7 @@ struct HomeView: View {
                     }
                 }
                 .navigationDestination(item: $selectedStock, destination: { stock in
-                    StockDetailsView(stock: stock, currentDate: currentDate, transactionError: $transactionError, onBuyOrSell: onBuyOrSell)
+                    StockDetailsView(stock: stock, currentDate: currentDate, transactionAlert: $transactionAlert, onBuyOrSell: onBuyOrSell)
                         .toolbarVisibility(.hidden, for: .tabBar)
                 })
                 .listStyle(.plain)
@@ -129,5 +129,5 @@ struct HomeView: View {
         .init(symbol: "NVDA", name: "NVIDIA Corporation"),
     ]
 
-    HomeView(currentDate: Date.now, stocks: stocks, transactionError: .constant(nil))
+    HomeView(currentDate: Date.now, stocks: stocks, transactionAlert: .constant(nil))
 }

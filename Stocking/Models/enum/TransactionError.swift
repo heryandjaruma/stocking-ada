@@ -19,3 +19,8 @@ enum TransactionError: LocalizedError {
         }
     }
 }
+
+struct TransactionAlert: Identifiable {
+    let id = UUID()
+    let message: String
+}

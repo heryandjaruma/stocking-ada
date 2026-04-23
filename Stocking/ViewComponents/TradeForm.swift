@@ -7,7 +7,7 @@ struct TradeForm: View {
     var currentDate: Date
     
     /// To be passed by parent for transaction error
-    @Binding var transactionError: TransactionError?
+    @Binding var transactionAlert: TransactionAlert?
     
     @State private var orderSide: OrderSide = .buy
     @State private var orderType: OrderType = .limit
@@ -20,12 +20,12 @@ struct TradeForm: View {
     // How many lots the user already owns (need to be connected to portfolio)
     var ownedLots: Int = 0
     
-    init(stock: Stock, currentDate: Date, ownedLots: Int = 0, onBuyOrSell: ((Order) -> Void)? = nil, transactionError: Binding<TransactionError?> = .constant(nil)) {
+    init(stock: Stock, currentDate: Date, ownedLots: Int = 0, onBuyOrSell: ((Order) -> Void)? = nil, transactionAlert: Binding<TransactionAlert?> = .constant(nil)) {
         self.stock = stock
         self.currentDate = currentDate
         self.ownedLots = ownedLots
         self.onBuyOrSell = onBuyOrSell
-        self._transactionError = transactionError
+        self._transactionAlert = transactionAlert
     }
     
     private var actionColor: Color {

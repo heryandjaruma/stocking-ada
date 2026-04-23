@@ -5,17 +5,19 @@
 //  Created by Heryan Djaruma on 20/04/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct HomeScreen: View {
     
     @Environment(\.modelContext) private var modelContext
     
     /// Get current date from local SwiftDate
-    @Query(filter: #Predicate<GlobalConfig> { config in
-        config.key == "currentDate"
-    })
+    @Query(
+        filter: #Predicate<GlobalConfig> { config in
+            config.key == "currentDate"
+        }
+    )
     private var configs: [GlobalConfig]
     var currentDateConfig: GlobalConfig? { configs.first }
     
@@ -27,7 +29,7 @@ struct HomeScreen: View {
     private var user: UserStockingData? { userData.first }
     
     /// Useful to show validation in the child view
-    @State private var transactionError: TransactionError? = nil
+    @State private var transactionAlert: TransactionAlert? = nil
     
     var body: some View {
         HomeView(
@@ -35,43 +37,70 @@ struct HomeScreen: View {
             stocks: stocks,
             onForwardDay: {
                 guard let config = currentDateConfig else { return }
-                config.dateValue = Calendar.current.date(byAdding: .day, value: 1, to: config.dateValue!)!
+                config.dateValue = Calendar.current.date(
+                    byAdding: .day,
+                    value: 1,
+                    to: config.dateValue!
+                )!
                 try? modelContext.save()
-            }, onBuyOrSell: { order in
-                onBuyOrSellStock(order: order)
-            }, transactionError: $transactionError)
+            },
+            onBuyOrSell: { order in
+                do {
+                    try onBuyOrSellStock(order: order)
+                } catch let error as TransactionError {
+                    transactionAlert = TransactionAlert(message: error.localizedDescription)
+                } catch {
+                    transactionAlert = TransactionAlert(message: error.localizedDescription)
+                }
+            },
+            transactionAlert: $transactionAlert
+        )
     }
     
     /// Check if balance is sufficient for executing the order
     private func isBalanceSufficient(for order: Order) -> Bool {
-        return (user?.tradeableBalance ?? 0) >= order.price * Double(order.quantity)
+        return (user?.tradeableBalance ?? 0) >= order.price
+        * Double(order.quantity)
     }
     
-    private func onBuyOrSellStock(order: Order) {
+    private func isSellPriceDiffMatch(for order: Order, stock: Stock) -> Bool{
+        //        return (stock)
+        return true
+    }
+    
+    private func onBuyOrSellStock(order: Order) throws {
         if order.orderType == "Market" {
             if order.side == "Buy" {
-                executeMarketSell(order: order)
-            } else { executeMarketBuy(order: order)}
+                try executeMarketBuy(order: order)
+            } else {
+                try executeMarketSell(order: order)
+            }
         } else {
             if order.side == "Limit" {
-                executeLimitBuy(order: order)
-            } else {executeLimitSell(order: order)}
+                try executeLimitBuy(order: order)
+            } else {
+                try executeLimitSell(order: order)
+            }
         }
     }
     
-    private func executeMarketBuy(order: Order) {
-        
+    private func executeMarketBuy(order: Order) throws {
+        guard isBalanceSufficient(for: order) else {
+            throw TransactionError.insufficientFunds
+        }
     }
     
-    private func executeMarketSell(order: Order) {
-        
+    private func executeMarketSell(order: Order) throws {
+        //       guard isPrice
     }
     
-    private func executeLimitBuy(order: Order) {
-        
+    private func executeLimitBuy(order: Order) throws {
+        guard isBalanceSufficient(for: order) else {
+            throw TransactionError.insufficientFunds
+        }
     }
     
-    private func executeLimitSell(order: Order) {
+    private func executeLimitSell(order: Order) throws {
         
     }
     

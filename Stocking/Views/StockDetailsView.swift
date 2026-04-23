@@ -9,7 +9,7 @@ struct StockDetailsView: View {
     @State private var selectedDate: Date? = nil
     
     /// To be passed by parent for transaction error
-    @Binding var transactionError: TransactionError?
+    @Binding var transactionAlert: TransactionAlert?
     
     private var timeRangedStockPriceHistory: [PriceHistory] {
         let someTimeAgo: Date = selectedRange.startDate(from: currentDate)
@@ -119,7 +119,7 @@ struct StockDetailsView: View {
                     .padding(.vertical, 16)
 
                 // MARK: Trade form
-                TradeForm(stock: stock, currentDate: currentDate, ownedLots: 0)
+                TradeForm(stock: stock, currentDate: currentDate, ownedLots: 0, onBuyOrSell: onBuyOrSell)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -146,6 +146,6 @@ private func previewDate(_ offset: Int) -> Date {
                 PriceHistory(timestamp: previewDate(-1), price: 420.00),
                 PriceHistory(timestamp: previewDate(0),  price: 429.20),
             ]
-        ), currentDate: Date.now, transactionError: .constant(nil))
+        ), currentDate: Date.now, transactionAlert: .constant(nil))
     }
 }
