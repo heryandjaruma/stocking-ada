@@ -12,9 +12,12 @@ struct HomeView: View {
     var stocks: [Stock] = []
 
     var onForwardDay: (() -> Void)? = nil  // optional callback param
-    var onBuyOrSell: ((Order, OwnedStock) -> Void)? = nil
+    var onBuyOrSell: ((Order) -> Void)? = nil
     
     @State private var selectedStock: Stock? = nil
+    
+    /// To be passed by parent for transaction error
+    @Binding var transactionError: TransactionError?
 
     var body: some View {
         NavigationStack {
@@ -30,7 +33,7 @@ struct HomeView: View {
                     }
                 }
                 .navigationDestination(item: $selectedStock, destination: { stock in
-                    StockDetailsView(stock: stock, currentDate: currentDate, onBuyOrSell: onBuyOrSell)
+                    StockDetailsView(stock: stock, currentDate: currentDate, transactionError: $transactionError, onBuyOrSell: onBuyOrSell)
                         .toolbarVisibility(.hidden, for: .tabBar)
                 })
                 .listStyle(.plain)
@@ -126,5 +129,5 @@ struct HomeView: View {
         .init(symbol: "NVDA", name: "NVIDIA Corporation"),
     ]
 
-    HomeView(currentDate: Date.now, stocks: stocks)
+    HomeView(currentDate: Date.now, stocks: stocks, transactionError: .constant(nil))
 }

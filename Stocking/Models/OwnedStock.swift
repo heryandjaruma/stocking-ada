@@ -13,6 +13,9 @@ class OwnedStock: Identifiable {
     var id: UUID = UUID()
     var timestamp: Date
     var stock : Stock
+    var isFinalized: Bool = false
+    @Relationship(deleteRule: .noAction, inverse: \PriceHistory.stock)
+    var orders: [Order] = []
     
     init(timestamp: Date, stock: Stock) {
         self.timestamp = timestamp

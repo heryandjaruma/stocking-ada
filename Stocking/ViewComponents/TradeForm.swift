@@ -6,6 +6,9 @@ struct TradeForm: View {
     var stock: Stock
     var currentDate: Date
     
+    /// To be passed by parent for transaction error
+    @Binding var transactionError: TransactionError?
+    
     @State private var orderSide: OrderSide = .buy
     @State private var orderType: OrderType = .limit
     @State private var price: Double = 260
@@ -17,7 +20,7 @@ struct TradeForm: View {
     // How many lots the user already owns (need to be connected to portfolio)
     var ownedLots: Int = 0
     
-    init(stock: Stock, currentDate: Date, ownedLots: Int = 0, onBuyOrSell: ((Order, OwnedStock) -> Void)? = nil) {
+    init(stock: Stock, currentDate: Date, ownedLots: Int = 0, onBuyOrSell: ((Order) -> Void)? = nil) {
         self.stock = stock
         self.currentDate = currentDate
         self.ownedLots = ownedLots
@@ -29,7 +32,7 @@ struct TradeForm: View {
     }
     
     /// Optional callback
-    var onBuyOrSell: ((Order, OwnedStock) -> Void)? = nil
+    var onBuyOrSell: ((Order) -> Void)? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -89,24 +92,23 @@ struct TradeForm: View {
                             quantity: lot,
                             price: price,
                             orderType: orderType.rawValue,
-                            side: orderSide.rawValue
-                        ),
-                        OwnedStock(timestamp: currentDate, stock: stock)
+                            side: orderSide.rawValue,
+                            status: "Created"
+                        )
                     )
                 }
             } else {
                 HStack(spacing: 12) {
                     ActionButton(label: "Sell", color: .red) {
-                        onBuyOrSell!(
-                            Order(
-                                timestamp: currentDate,
-                                quantity: lot,
-                                price: price,
-                                orderType: orderType.rawValue,
-                                side: orderSide.rawValue
-                            ),
-                            OwnedStock(timestamp: currentDate, stock: stock)
-                        )
+//                        onBuyOrSell!(
+//                            Order(
+//                                timestamp: currentDate,
+//                                quantity: lot,
+//                                price: price,
+//                                orderType: orderType.rawValue,
+//                                side: orderSide.rawValue
+//                            ),
+//                        )
                     }
                 }
             }
