@@ -47,10 +47,11 @@ struct HomeScreen: View {
             onBuyOrSell: { order in
                 do {
                     try onBuyOrSellStock(order: order)
+                    transactionAlert = TransactionAlert(message: "Order placed successfully", type: .success)
                 } catch let error as TransactionError {
-                    transactionAlert = TransactionAlert(message: error.localizedDescription)
+                    transactionAlert = TransactionAlert(message: error.localizedDescription, type: .error)
                 } catch {
-                    transactionAlert = TransactionAlert(message: error.localizedDescription)
+                    transactionAlert = TransactionAlert(message: error.localizedDescription, type: .error)
                 }
             },
             transactionAlert: $transactionAlert

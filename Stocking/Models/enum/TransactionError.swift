@@ -23,4 +23,9 @@ enum TransactionError: LocalizedError {
 struct TransactionAlert: Identifiable {
     let id = UUID()
     let message: String
+    var type: AlertType = .error
+    
+    enum AlertType {
+        case success, error
+    }
 }
