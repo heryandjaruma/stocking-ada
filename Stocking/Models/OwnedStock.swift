@@ -13,12 +13,14 @@ class OwnedStock: Identifiable {
     var id: UUID = UUID()
     var timestamp: Date
     var stock : Stock
+    var stockSymbol: String
     var isFinalized: Bool = false
-    @Relationship(deleteRule: .noAction, inverse: \PriceHistory.stock)
+    @Relationship(deleteRule: .noAction, inverse: \Order.ownedStock)
     var orders: [Order] = []
     
-    init(timestamp: Date, stock: Stock) {
+    init(timestamp: Date, stock: Stock, stockSymbol: String) {
         self.timestamp = timestamp
         self.stock = stock
+        self.stockSymbol = stockSymbol
     }
 }
