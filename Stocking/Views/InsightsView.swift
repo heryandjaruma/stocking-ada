@@ -40,14 +40,20 @@ struct InsightsView: View {
                 }
 
                 if let primary = primaryStock, let secondary = secondaryStock {
-                    CompareChart(primary: primary, secondary: secondary, appToday: currentDate)
-                        .frame(height: 260)
-                        .padding(14)
+                    CompareChart(
+                        primary: primary,
+                        secondary: secondary,
+                        appToday: currentDate
+                    )
+                    .frame(height: 260)
+                    .padding(14)
                 } else {
                     ContentUnavailableView(
                         "No Stocks Selected",
                         systemImage: "chart.line.uptrend.xyaxis",
-                        description: Text("Tap the buttons above to select stocks to compare.")
+                        description: Text(
+                            "Tap the buttons above to select stocks to compare."
+                        )
                     )
                     .frame(height: 260)
                 }
@@ -57,20 +63,31 @@ struct InsightsView: View {
                         .font(.title2)
                         .bold()
 
-                    ForEach(news) { oneNews in
-                        NewsCard(news: oneNews, currentDate: currentDate)
-                    }
+                    ForEach(
+                        news.filter {
+                            ($0.stock.symbol == primaryStock?.symbol ||
+                            $0.stock.symbol == secondaryStock?.symbol) &&
+                            Calendar.current.isDate($0.published, inSameDayAs: currentDate)
+                        }
+                    ) { oneNews in
+                            NewsCard(news: oneNews, currentDate: currentDate)
+                        }
+                    
                 }
             }
             .padding()
         }
         .onAppear {
-            if primaryStock == nil   { primaryStock   = stocks.first }
-            if secondaryStock == nil { secondaryStock = stocks.dropFirst().first }
+            if primaryStock == nil { primaryStock = stocks.first }
+            if secondaryStock == nil {
+                secondaryStock = stocks.dropFirst().first
+            }
         }
         .onChange(of: stocks) { _, newStocks in
-            if primaryStock == nil   { primaryStock   = newStocks.first }
-            if secondaryStock == nil { secondaryStock = newStocks.dropFirst().first }
+            if primaryStock == nil { primaryStock = newStocks.first }
+            if secondaryStock == nil {
+                secondaryStock = newStocks.dropFirst().first
+            }
         }
         .sheet(isPresented: $showingPrimarySheet) {
             SelectStock(currentDate: currentDate, stocks: stocks) { selected in
@@ -91,12 +108,54 @@ struct InsightsView: View {
         symbol: "AAPL",
         name: "Apple Inc.",
         priceHistory: [
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -6, to: Date())!, price: 178.50),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -5, to: Date())!, price: 182.30),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -4, to: Date())!, price: 179.90),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -3, to: Date())!, price: 185.10),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -2, to: Date())!, price: 188.75),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -1, to: Date())!, price: 191.20),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -6,
+                    to: Date()
+                )!,
+                price: 178.50
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -5,
+                    to: Date()
+                )!,
+                price: 182.30
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -4,
+                    to: Date()
+                )!,
+                price: 179.90
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -3,
+                    to: Date()
+                )!,
+                price: 185.10
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -2,
+                    to: Date()
+                )!,
+                price: 188.75
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -1,
+                    to: Date()
+                )!,
+                price: 191.20
+            ),
             PriceHistory(timestamp: Date(), price: 195.60),
         ]
     )
@@ -105,24 +164,79 @@ struct InsightsView: View {
         symbol: "TSLA",
         name: "Tesla Inc.",
         priceHistory: [
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -6, to: Date())!, price: 245.00),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -5, to: Date())!, price: 238.50),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -4, to: Date())!, price: 242.10),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -3, to: Date())!, price: 230.80),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -2, to: Date())!, price: 225.40),
-            PriceHistory(timestamp: Calendar.current.date(byAdding: .day, value: -1, to: Date())!, price: 219.90),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -6,
+                    to: Date()
+                )!,
+                price: 245.00
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -5,
+                    to: Date()
+                )!,
+                price: 238.50
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -4,
+                    to: Date()
+                )!,
+                price: 242.10
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -3,
+                    to: Date()
+                )!,
+                price: 230.80
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -2,
+                    to: Date()
+                )!,
+                price: 225.40
+            ),
+            PriceHistory(
+                timestamp: Calendar.current.date(
+                    byAdding: .day,
+                    value: -1,
+                    to: Date()
+                )!,
+                price: 219.90
+            ),
             PriceHistory(timestamp: Date(), price: 212.30),
         ]
     )
 
-    let allStocks: [Stock] = [primaryStock, secondaryStock,
+    let allStocks: [Stock] = [
+        primaryStock, secondaryStock,
         .init(symbol: "MSFT", name: "Microsoft Corporation"),
         .init(symbol: "NVDA", name: "NVIDIA Corporation"),
     ]
 
     let news: [News] = [
-        News(stock: primaryStock, source: "TechCrunch", headline: "Apple Q3 2023 results", desc: "Apple reported strong Q3 2023 results."),
-        News(stock: secondaryStock, source: "Djaruma Foundation", headline: "Tesla Q4 2023 earnings", desc: "Tesla reported robust Q4 2023 earnings.")
+        News(
+            stock: primaryStock,
+            source: "TechCrunch",
+            headline: "Apple Q3 2023 results",
+            desc: "Apple reported strong Q3 2023 results.",
+            published: Date.now
+        ),
+        News(
+            stock: secondaryStock,
+            source: "Djaruma Foundation",
+            headline: "Tesla Q4 2023 earnings",
+            desc: "Tesla reported robust Q4 2023 earnings.",
+            published: Date.now
+        ),
     ]
 
     InsightsView(
