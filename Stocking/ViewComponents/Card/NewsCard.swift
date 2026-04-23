@@ -89,7 +89,8 @@ private func previewDate(_ offset: Int) -> Date {
             source: "The Wall Street Journal",
             headline: "TSMC Posts Profit Beat Despite Middle East Conflict",
             desc:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim..."
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim...",
+            published: previewDate(0)
         ), currentDate: Date.now
     )
 }
