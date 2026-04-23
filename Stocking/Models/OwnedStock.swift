@@ -11,11 +11,13 @@ import SwiftData
 @Model
 class OwnedStock: Identifiable {
     var id: UUID = UUID()
-    var timestamp: Date = Date()
+    var timestamp: Date
     var stock : Stock
+    var isFinalized: Bool = false
+    @Relationship(deleteRule: .noAction, inverse: \PriceHistory.stock)
+    var orders: [Order] = []
     
-    init(id: UUID, timestamp: Date, stock: Stock) {
-        self.id = id
+    init(timestamp: Date, stock: Stock) {
         self.timestamp = timestamp
         self.stock = stock
     }

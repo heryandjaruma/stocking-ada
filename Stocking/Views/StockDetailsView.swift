@@ -8,6 +8,9 @@ struct StockDetailsView: View {
     @State private var selectedRange: ChartRange = .oneMonth
     @State private var selectedDate: Date? = nil
     
+    /// To be passed by parent for transaction error
+    @Binding var transactionError: TransactionError?
+    
     private var timeRangedStockPriceHistory: [PriceHistory] {
         let someTimeAgo: Date = selectedRange.startDate(from: currentDate)
         return stock.sortedPriceHistory.filter {
@@ -36,6 +39,9 @@ struct StockDetailsView: View {
     }
     
     private var statusColor: Color { priceStatus.color }
+    
+    /// Optional callback for buying stocks
+    var onBuyOrSell: ((Order) -> Void)? = nil
 
     var body: some View {
         ScrollView {
@@ -113,7 +119,7 @@ struct StockDetailsView: View {
                     .padding(.vertical, 16)
 
                 // MARK: Trade form
-                TradeForm(stock: stock, ownedLots: 0)
+                TradeForm(stock: stock, currentDate: currentDate, ownedLots: 0)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -129,7 +135,7 @@ private func previewDate(_ offset: Int) -> Date {
 #Preview {
     NavigationStack {
         StockDetailsView(stock: Stock(
-            symbol: "TSM",
+            symbol: "AAPL",
             name: "Apple Inc.",
             priceHistory: [
                 PriceHistory(timestamp: previewDate(-6), price: 279.20),
@@ -140,6 +146,6 @@ private func previewDate(_ offset: Int) -> Date {
                 PriceHistory(timestamp: previewDate(-1), price: 420.00),
                 PriceHistory(timestamp: previewDate(0),  price: 429.20),
             ]
-        ), currentDate: Date.now)
+        ), currentDate: Date.now, transactionError: .constant(nil))
     }
 }
