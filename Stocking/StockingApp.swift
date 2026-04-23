@@ -12,12 +12,14 @@ import SwiftUI
 struct StockingApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
+            GlobalConfig.self,
             UserStockingData.self,
             EquityHistory.self,
-            GlobalConfig.self,
             Stock.self,
             PriceHistory.self,
-            News.self
+            News.self,
+            Order.self,
+            OwnedStock.self,
         ])
         let modelConfiguration = ModelConfiguration(
             schema: schema,

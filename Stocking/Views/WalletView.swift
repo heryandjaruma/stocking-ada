@@ -11,6 +11,8 @@ import SwiftData
 struct WalletView: View {
     var userData: UserStockingData
     var equityHistory: [EquityHistory]
+    var ownedStocks: [OwnedStock]
+    var currentDate: Date
     
     /// Computed property to convert EquityHistory into ChartDataPoint
     private var chartData: [ChartDataPoint] {
@@ -35,9 +37,11 @@ struct WalletView: View {
     @State private var currentBalance: String
     @State private var lastBalanceSaved: Double
     
-    init(userData: UserStockingData, equityHistory: [EquityHistory], onSaveBalance: ((Double) -> Void)? = nil) {
+    init(userData: UserStockingData, equityHistory: [EquityHistory], ownedStocks: [OwnedStock], currentDate: Date, onSaveBalance: ((Double) -> Void)? = nil) {
         self.userData = userData
         self.equityHistory = equityHistory
+        self.ownedStocks = ownedStocks
+        self.currentDate = currentDate
         _currentBalance = State(initialValue: String(userData.totalEquity)) /// Need to set to state variable in the init()
         lastBalanceSaved = userData.totalEquity
         self.onSaveBalance = onSaveBalance
@@ -195,6 +199,18 @@ struct WalletView: View {
                             
                     }
                 }
+                
+                LazyVStack {
+                    if !ownedStocks.isEmpty {
+                        ForEach(ownedStocks) { ownedStock in
+                            OwnedStockCard(ownedStock: ownedStock, currentDate: currentDate)
+                        }
+                    } else {
+                        Text("You currently don't own any stock.")
+                            .font(.footnote)
+                            .foregroundStyle(.black.tertiary)
+                    }
+                }
             }
             .padding()
         }
@@ -219,6 +235,28 @@ private func previewDate(_ offset: Int) -> Date {
         EquityHistory(totalEquity: 204.0, timestamp: Calendar.current.date(byAdding: .day, value: -5, to: Date())!),
     ]
         .sorted { $0.timestamp < $1.timestamp }
+    let ownedStocks: [OwnedStock] = [
+        OwnedStock(timestamp: Date.now, stock: Stock(symbol: "AAPL", name: "Apple Inc."), stockSymbol: "AAPL")
+    ]
+    WalletView(userData: userData, equityHistory: previewEquityHistory, ownedStocks: ownedStocks, currentDate: Date.now)
+}
+
+#Preview("StockOwnedEmpty") {
+    let userData = UserStockingData(totalEquity: 100.0, tradeableBalance: 67.0, investedBalance: 33.0)
     
-    WalletView(userData: userData, equityHistory: previewEquityHistory)
+    /// We can create date shifted fromt today using Calendar.current.date(byAdding: .day, value: -1, to: Date())
+    
+    let previewEquityHistory = [
+        EquityHistory(totalEquity: 202.0, timestamp: Calendar.current.date(byAdding: .day, value: 0, to: Date())!),
+        EquityHistory(totalEquity: 103.0, timestamp: Calendar.current.date(byAdding: .day, value: -1, to: Date())!),
+        EquityHistory(totalEquity: 104.0, timestamp: Calendar.current.date(byAdding: .day, value: -2, to: Date())!),
+        EquityHistory(totalEquity: 105.0, timestamp: Calendar.current.date(byAdding: .day, value: -3, to: Date())!),
+        EquityHistory(totalEquity: 106.0, timestamp: Calendar.current.date(byAdding: .day, value: -4, to: Date())!),
+        EquityHistory(totalEquity: 204.0, timestamp: Calendar.current.date(byAdding: .day, value: -5, to: Date())!),
+    ]
+        .sorted { $0.timestamp < $1.timestamp }
+    let ownedStocks: [OwnedStock] = [
+//        OwnedStock(timestamp: Date.now, stock: Stock(symbol: "AAPL", name: "Apple Inc."), stockSymbol: "AAPL")
+    ]
+    WalletView(userData: userData, equityHistory: previewEquityHistory, ownedStocks: ownedStocks, currentDate: Date.now)
 }

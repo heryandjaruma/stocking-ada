@@ -56,6 +56,10 @@ struct HomeScreen: View {
             },
             transactionAlert: $transactionAlert
         )
+        .alert(item: $transactionAlert) { alert in
+            Alert(title: Text(alert.type == .success ? "Success" : "Error"),
+                  message: Text(alert.message))
+        }
     }
     
     /// Check if balance is sufficient for executing the order
@@ -86,9 +90,33 @@ struct HomeScreen: View {
     }
     
     private func executeMarketBuy(order: Order) throws {
+        print("Executing Market Buy")
         guard isBalanceSufficient(for: order) else {
             throw TransactionError.insufficientFunds
         }
+        
+        /// Get current stock object
+        let stock = try findStockByStockSymbol(order.stockSymbol)!
+        
+        // Check current existing ownedStock
+        let ownedStock: OwnedStock
+        if let existingOwnedStock = try findOwnedStockWithIsFinalizedByStockSymbol(false, order.stockSymbol) {
+            ownedStock = existingOwnedStock
+        } else { /// Else create a new one to be inserted
+            ownedStock = OwnedStock(timestamp: Date.now, stock: stock, stockSymbol: order.stockSymbol)
+            modelContext.insert(ownedStock)
+        }
+        
+        /// Randomize fill price to +/- 5%
+        order.price = order.price * Double.random(in: 0.95...1.05)
+        
+        /// Attach new order attached to the ownedStock
+        ownedStock.orders.append(order)
+        
+        /// Change user's invested balance
+        user?.investedBalance += order.price * Double(order.quantity)
+        
+        try modelContext.save()
     }
     
     private func executeMarketSell(order: Order) throws {

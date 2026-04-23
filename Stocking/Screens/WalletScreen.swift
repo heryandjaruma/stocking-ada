@@ -10,15 +10,27 @@ import SwiftData
 
 struct WalletScreen: View {
     @Environment(\.modelContext) private var modelContext
+    
+    /// Get current date from local SwiftDate
+    @Query(
+        filter: #Predicate<GlobalConfig> { config in
+            config.key == "currentDate"
+        }
+    )
+    private var configs: [GlobalConfig]
+    var currentDateConfig: GlobalConfig? { configs.first }
+    
     @Query private var userData: [UserStockingData]
     @Query(sort: \EquityHistory.timestamp, order: .forward) private var equityHistory: [EquityHistory]
     
     var user: UserStockingData? { userData.first }
     
+    @Query private var ownedStocks: [OwnedStock]
+    
     var body: some View {
         Group {
             if let user {
-                WalletView(userData: user, equityHistory: equityHistory, onSaveBalance: { balance in
+                WalletView(userData: user, equityHistory: equityHistory, ownedStocks: ownedStocks, currentDate: currentDateConfig?.dateValue ?? Date.now, onSaveBalance: { balance in
                     user.totalEquity = balance
                     modelContext.insert(user)
                 })
