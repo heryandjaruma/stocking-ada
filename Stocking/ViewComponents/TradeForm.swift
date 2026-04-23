@@ -20,11 +20,12 @@ struct TradeForm: View {
     // How many lots the user already owns (need to be connected to portfolio)
     var ownedLots: Int = 0
     
-    init(stock: Stock, currentDate: Date, ownedLots: Int = 0, onBuyOrSell: ((Order) -> Void)? = nil) {
+    init(stock: Stock, currentDate: Date, ownedLots: Int = 0, onBuyOrSell: ((Order) -> Void)? = nil, transactionError: Binding<TransactionError?> = .constant(nil)) {
         self.stock = stock
         self.currentDate = currentDate
         self.ownedLots = ownedLots
         self.onBuyOrSell = onBuyOrSell
+        self._transactionError = transactionError
     }
     
     private var actionColor: Color {
