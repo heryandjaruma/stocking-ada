@@ -10,12 +10,13 @@
 import Foundation
 
 enum TransactionError: LocalizedError {
-    case insufficientFunds, invalidQuantity
+    case insufficientFunds, invalidQuantity, stockNotOwned
     
     var errorDescription: String? {
         switch self {
         case .insufficientFunds: return "You don't have enough balance"
         case .invalidQuantity: return "You don't have this amount of stock"
+        case .stockNotOwned: return "You don't own any amount of this stock"
         }
     }
 }

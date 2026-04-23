@@ -92,7 +92,42 @@ struct HomeScreen: View {
     }
     
     private func executeMarketSell(order: Order) throws {
-        //       guard isPrice
+        let stock = try findStockByStockSymbol(order.stockSymbol)!
+        
+        let ownedStock: OwnedStock
+        if let existingOwnedStock = try findOwnedStockWithIsFinalizedByStockSymbol(false, order.stockSymbol) {
+            ownedStock = existingOwnedStock
+        } else {
+            throw TransactionError.stockNotOwned
+        }
+        
+        /// Calculate total stock owned from timeranged order array
+        //        let orders = try findOrdersFromStartDateByStockSymbol(ownedStock.timestamp, order.stockSymbol)
+        //        let totalStockOwned = orders.reduce(0) { $0 + $1.quantity }
+        let orders = ownedStock.orders
+        let buyOrders = orders.filter { $0.side == "Buy" }
+        let sellOrders = orders.filter { $0.side == "Sell" }
+
+        let totalStockOwned = buyOrders.reduce(0) { $0 + $1.quantity }
+                            - sellOrders.reduce(0) { $0 + $1.quantity }
+        
+        
+        /// Calculate total potential revenue from timerange order array
+        let totalPotentialRevenue = orders.reduce(0) { $0 + (Double($1.quantity) * $1.price)  }
+        
+        /// Calculate actual order transaction
+        let deltaTransactionQuantity = totalStockOwned - order.quantity
+        
+        if deltaTransactionQuantity == 0 {
+            ownedStock.isFinalized = true /// Mark as this ownedStock isFinalized (mark this position complete)
+        } else {
+            modelContext.insert(order)
+        }
+        
+        /// Add potential revenue to user balance
+        user?.totalEquity = totalPotentialRevenue
+        
+        try modelContext.save()
     }
     
     private func executeLimitBuy(order: Order) throws {
@@ -103,6 +138,38 @@ struct HomeScreen: View {
     
     private func executeLimitSell(order: Order) throws {
         
+    }
+    
+    /// Utils
+    private func findStockByStockSymbol(_ stockSymbol: String) throws -> Stock? {
+        let predicate = #Predicate<Stock> { item in
+            item.symbol.contains(stockSymbol)
+        }
+        let descriptor = FetchDescriptor(predicate: predicate)
+        return try modelContext.fetch(descriptor).first
+    }
+    
+    private func findOwnedStockWithIsFinalizedByStockSymbol(_ isFinalized: Bool, _ stockSymbol: String) throws -> OwnedStock? {
+        let predicate = #Predicate<OwnedStock> { item in
+            item.stockSymbol.contains(stockSymbol) && item.isFinalized == isFinalized
+        }
+        var descriptor = FetchDescriptor<OwnedStock>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
+        return try modelContext.fetch(descriptor).first
+    }
+    
+    private func findOrdersFromStartDateByStockSymbol(_ startDate: Date, _ stockSymbol: String) throws -> [Order] {
+        let predicate = #Predicate<Order> { item in
+            item.stockSymbol.contains(stockSymbol)
+        }
+        var descriptor = FetchDescriptor<Order>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+        return try modelContext.fetch(descriptor)
     }
     
 }
