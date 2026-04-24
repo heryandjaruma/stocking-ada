@@ -104,6 +104,7 @@ struct TradeForm: View {
                             price: price,
                             orderType: orderType.rawValue,
                             side: orderSide.rawValue,
+                            expiry: orderType == .limit ? selectedExpiry : nil,
                             status: "Created"
                         )
                     )
@@ -119,6 +120,7 @@ struct TradeForm: View {
                                 price: price,
                                 orderType: orderType.rawValue,
                                 side: orderSide.rawValue,
+                                expiry: orderType == .limit ? selectedExpiry : nil,
                                 status: "Created",
                             ),
                         )

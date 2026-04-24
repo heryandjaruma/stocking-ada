@@ -13,10 +13,11 @@ struct HomeView: View {
     var orders: [Order] = []
 
     var onForwardDay: (() -> Void)? = nil  // optional callback param
+    var onProcessPendingLimitOrders: (() -> Void)? = nil
     var onBuyOrSell: ((Order) -> Void)? = nil
 
     @State private var selectedStock: Stock? = nil
-    
+
     func filterOrders(_ stock: Stock) -> [Order] {
         return orders.filter { $0.stockSymbol == stock.symbol }
     }
@@ -59,7 +60,7 @@ struct HomeView: View {
                                 }
                             }
                         }
-                        
+
                     }
                 )
                 .listStyle(.plain)
@@ -80,7 +81,10 @@ struct HomeView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
-                        Button(action: { onForwardDay?() }) {
+                        Button(action: {
+                            onForwardDay?()
+                            onProcessPendingLimitOrders?()
+                        }) {
                             Text("Forward 1 day")
                                 .font(.footnote)
                             Image(systemName: "chevron.forward.2")
