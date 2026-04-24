@@ -10,12 +10,17 @@ import SwiftUI
 struct HomeView: View {
     var currentDate: Date
     var stocks: [Stock] = []
+    var orders: [Order] = []
 
     var onForwardDay: (() -> Void)? = nil  // optional callback param
     var onBuyOrSell: ((Order) -> Void)? = nil
-    
+
     @State private var selectedStock: Stock? = nil
     
+    func filterOrders(_ stock: Stock) -> [Order] {
+        return orders.filter { $0.stockSymbol == stock.symbol }
+    }
+
     /// To be passed by parent for transaction error
     @Binding var transactionAlert: TransactionAlert?
 
@@ -32,10 +37,31 @@ struct HomeView: View {
                             .listRowSeparator(.hidden)
                     }
                 }
-                .navigationDestination(item: $selectedStock, destination: { stock in
-                    StockDetailsView(stock: stock, currentDate: currentDate, transactionAlert: $transactionAlert, onBuyOrSell: onBuyOrSell)
+                .navigationDestination(
+                    item: $selectedStock,
+                    destination: { stock in
+                        StockDetailsView(
+                            stock: stock,
+                            currentDate: currentDate,
+                            transactionAlert: $transactionAlert,
+                            onBuyOrSell: onBuyOrSell
+                        )
                         .toolbarVisibility(.hidden, for: .tabBar)
-                })
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                NavigationLink {
+                                    OrderHistoryView(orders: orders)
+                                } label: {
+                                    Image(
+                                        systemName:
+                                            "clock.arrow.trianglehead.counterclockwise.rotate.90"
+                                    )
+                                }
+                            }
+                        }
+                        
+                    }
+                )
                 .listStyle(.plain)
             }
             .listRowSpacing(-12)
@@ -129,5 +155,9 @@ struct HomeView: View {
         .init(symbol: "NVDA", name: "NVIDIA Corporation"),
     ]
 
-    HomeView(currentDate: Date.now, stocks: stocks, transactionAlert: .constant(nil))
+    HomeView(
+        currentDate: Date.now,
+        stocks: stocks,
+        transactionAlert: .constant(nil)
+    )
 }

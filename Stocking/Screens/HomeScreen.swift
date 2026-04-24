@@ -31,10 +31,13 @@ struct HomeScreen: View {
     /// Useful to show validation in the child view
     @State private var transactionAlert: TransactionAlert? = nil
     
+    @Query private var orders: [Order]
+    
     var body: some View {
         HomeView(
             currentDate: currentDateConfig?.dateValue ?? Date.now,
             stocks: stocks,
+            orders: orders,
             onForwardDay: {
                 guard let config = currentDateConfig else { return }
                 config.dateValue = Calendar.current.date(
@@ -217,7 +220,7 @@ struct HomeScreen: View {
         let predicate = #Predicate<Order> { item in
             item.stockSymbol.contains(stockSymbol)
         }
-        var descriptor = FetchDescriptor<Order>(
+        let descriptor = FetchDescriptor<Order>(
             predicate: predicate,
             sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
         )

@@ -4,6 +4,7 @@ import SwiftUI
 struct StockDetailsView: View {
     var stock: Stock
     var currentDate: Date
+    var ownedStock: OwnedStock?
 
     @State private var selectedRange: ChartRange = .oneMonth
     @State private var selectedDate: Date? = nil
@@ -155,8 +156,13 @@ struct StockDetailsView: View {
                 // MARK: Trade form
                 TradeForm(
                     stock: stock,
+                    ownedStock: ownedStock
+                        ?? OwnedStock(
+                            timestamp: currentDate,
+                            stock: stock,
+                            stockSymbol: stock.symbol
+                        ),
                     currentDate: currentDate,
-                    ownedLots: 0,
                     onBuyOrSell: onBuyOrSell
                 )
             }
