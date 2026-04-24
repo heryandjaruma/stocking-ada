@@ -11,7 +11,7 @@ struct TradeForm: View {
     
     @State private var orderSide: OrderSide = .buy
     @State private var orderType: OrderType = .limit
-    @State private var price: Double = 260
+    @State private var price: Double
     @State private var lot: Int = 1
     
     private var expiryOptions = ["Good For Day", "Good Till Canceled"]
@@ -26,6 +26,7 @@ struct TradeForm: View {
         self.ownedLots = ownedLots
         self.onBuyOrSell = onBuyOrSell
         self._transactionAlert = transactionAlert
+        self.price = stock.getPriceByDate(currentDate)?.price ?? 0
     }
     
     private var actionColor: Color {
@@ -102,15 +103,17 @@ struct TradeForm: View {
             } else {
                 HStack(spacing: 12) {
                     ActionButton(label: "Sell", color: .red) {
-//                        onBuyOrSell!(
-//                            Order(
-//                                timestamp: currentDate,
-//                                quantity: lot,
-//                                price: price,
-//                                orderType: orderType.rawValue,
-//                                side: orderSide.rawValue
-//                            ),
-//                        )
+                        onBuyOrSell!(
+                            Order(
+                                timestamp: currentDate,
+                                quantity: lot,
+                                stockSymbol: stock.symbol,
+                                price: price,
+                                orderType: orderType.rawValue,
+                                side: orderSide.rawValue ,
+                                status: "Created",
+                            ),
+                        )
                     }
                 }
             }

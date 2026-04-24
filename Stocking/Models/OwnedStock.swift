@@ -23,4 +23,12 @@ class OwnedStock: Identifiable {
         self.stock = stock
         self.stockSymbol = stockSymbol
     }
+    
+    /// Calculate amount of lot
+    func getTotalOwnedLot() -> Int {
+        let buyOrders = orders.filter { $0.side == "Buy" }
+        let sellOrders = orders.filter { $0.side == "Sell" }
+        return buyOrders.reduce(0) { $0 + $1.quantity }
+        - sellOrders.reduce(0) { $0 + $1.quantity }
+    }
 }

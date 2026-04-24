@@ -40,4 +40,9 @@ class Stock: Identifiable, Hashable {
 
         return 0
     }
+    
+    func getPriceByDate(_ date: Date) -> PriceHistory? {
+        let calendar = Calendar.current
+        return priceHistory.first(where: { calendar.isDate($0.timestamp, inSameDayAs: date) })
+    }
 }
