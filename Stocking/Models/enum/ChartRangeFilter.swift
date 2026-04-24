@@ -32,7 +32,7 @@ enum ChartRange: String, CaseIterable {
     func filtered(_ data: [ChartDataPoint], appToday: Date) -> [ChartDataPoint] {
         let start = startDate(from: appToday)
         let end = Calendar.current.startOfDay(for: appToday)
-            .addingTimeInterval(86400 - 1) // end of app's today
+            .addingTimeInterval(86400) // end of app's today
         return data.filter { $0.date >= start && $0.date <= end }
     }
 }

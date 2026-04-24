@@ -5,8 +5,8 @@
 //  Created by Heryan Djaruma on 17/04/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct WalletScreen: View {
     @Environment(\.modelContext) private var modelContext
@@ -21,8 +21,9 @@ struct WalletScreen: View {
     var currentDateConfig: GlobalConfig? { configs.first }
     
     @Query private var userData: [UserStockingData]
-    @Query(sort: \EquityHistory.timestamp, order: .forward) private var equityHistory: [EquityHistory]
-    
+    @Query(sort: \EquityHistory.timestamp, order: .forward) private
+        var equityHistory: [EquityHistory]
+
     var user: UserStockingData? { userData.first }
     
     @Query(
