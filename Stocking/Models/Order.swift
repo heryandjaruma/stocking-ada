@@ -32,3 +32,9 @@ class Order: Identifiable {
     }
     
 }
+
+extension Order: CustomStringConvertible {
+    var description: String {
+        "Order(quantity: \(quantity), symbol: \(stockSymbol), price: \(price), orderType: \(orderType), side: \(side), expiry: \(String(describing: expiry)), status: \(status))"
+    }
+}

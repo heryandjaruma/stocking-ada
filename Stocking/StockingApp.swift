@@ -107,8 +107,8 @@ struct StockingApp: App {
         guard existing?.isEmpty == true else { return }
 
         let defaultUser = UserStockingData(
-            totalEquity: 100.0,
-            tradeableBalance: 100.0,
+            totalEquity: 10_000.0,
+            tradeableBalance: 10_000.0,
             investedBalance: 0.0
         )
         context.insert(defaultUser)

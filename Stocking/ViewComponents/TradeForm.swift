@@ -103,15 +103,17 @@ struct TradeForm: View {
             } else {
                 HStack(spacing: 12) {
                     ActionButton(label: "Sell", color: .red) {
-                        //                        onBuyOrSell!(
-                        //                            Order(
-                        //                                timestamp: currentDate,
-                        //                                quantity: lot,
-                        //                                price: price,
-                        //                                orderType: orderType.rawValue,
-                        //                                side: orderSide.rawValue
-                        //                            ),
-                        //                        )
+                        onBuyOrSell!(
+                            Order(
+                                timestamp: currentDate,
+                                quantity: lot,
+                                stockSymbol: stock.symbol,
+                                price: price,
+                                orderType: orderType.rawValue,
+                                side: orderSide.rawValue ,
+                                status: "Created",
+                            ),
+                        )
                     }
                 }
             }

@@ -25,7 +25,11 @@ struct WalletScreen: View {
     
     var user: UserStockingData? { userData.first }
     
-    @Query private var ownedStocks: [OwnedStock]
+    @Query(
+        filter: #Predicate<OwnedStock> { ownedStock in
+            ownedStock.isFinalized == false
+        }
+    ) private var ownedStocks: [OwnedStock]
     
     var body: some View {
         Group {

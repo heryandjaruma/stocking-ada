@@ -64,8 +64,8 @@ struct HomeScreen: View {
     
     /// Check if balance is sufficient for executing the order
     private func isBalanceSufficient(for order: Order) -> Bool {
-        return (user?.tradeableBalance ?? 0) >= order.price
-        * Double(order.quantity)
+        print("Tradable: \(String(describing: user?.tradeableBalance)), price: \((order.price * Double(order.quantity)))")
+        return (user?.tradeableBalance ?? 0) >= (order.price * Double(order.quantity))
     }
     
     private func isSellPriceDiffMatch(for order: Order, stock: Stock) -> Bool{
@@ -90,14 +90,15 @@ struct HomeScreen: View {
     }
     
     private func executeMarketBuy(order: Order) throws {
-        guard !isBalanceSufficient(for: order) else {
+        print(order)
+        guard isBalanceSufficient(for: order) else {
             throw TransactionError.insufficientFunds
         }
         
         /// Get current stock object
         let stock = try findStockByStockSymbol(order.stockSymbol)!
         
-        // Check current existing ownedStock
+        /// Check current existing ownedStock
         let ownedStock: OwnedStock
         if let existingOwnedStock = try findOwnedStockWithIsFinalizedByStockSymbol(false, order.stockSymbol) {
             ownedStock = existingOwnedStock
@@ -107,7 +108,10 @@ struct HomeScreen: View {
         }
         
         /// Randomize fill price to +/- 5%
-        order.price = order.price * Double.random(in: 0.95...1.05)
+        order.price = order.price * Double.random(in: 0.99...1.01)
+        
+        /// Set status to filled
+        order.status = "Filled"
         
         /// Attach new order attached to the ownedStock
         ownedStock.orders.append(order)
@@ -116,15 +120,18 @@ struct HomeScreen: View {
         /// Change user's invested balance
         user?.investedBalance += orderValue
         
-        /// Substract user's equity
-        user?.totalEquity -= orderValue
+        /// Change user's tradeable balance
+        user?.tradeableBalance -= orderValue
         
         try modelContext.save()
     }
     
+    /// Execute market sell
+    /// Uses Average Cost Basis (ACB) to blend all purchase price into a weighted average.
     private func executeMarketSell(order: Order) throws {
-        let stock = try findStockByStockSymbol(order.stockSymbol)!
+        print(order)
         
+        /// Check current existing ownedStock
         let ownedStock: OwnedStock
         if let existingOwnedStock = try findOwnedStockWithIsFinalizedByStockSymbol(false, order.stockSymbol) {
             ownedStock = existingOwnedStock
@@ -138,25 +145,39 @@ struct HomeScreen: View {
         let orders = ownedStock.orders
         let buyOrders = orders.filter { $0.side == "Buy" }
         let sellOrders = orders.filter { $0.side == "Sell" }
-
         let totalStockOwned = buyOrders.reduce(0) { $0 + $1.quantity }
                             - sellOrders.reduce(0) { $0 + $1.quantity }
         
+        /// Guard against selling more than owned
+        guard order.quantity <= totalStockOwned else {
+            throw TransactionError.insufficientStocks
+        }
         
-        /// Calculate total potential revenue from timerange order array
-        let totalPotentialRevenue = orders.reduce(0) { $0 + (Double($1.quantity) * $1.price)  }
+        /// Randomize fill price
+        order.price = order.price * Double.random(in: 0.99...1.01)
+        order.status = "Filled"
+        
+        /// PnL logics
+        let totalBuyValue = buyOrders.reduce(0.0) { $0 + ($1.price * Double($1.quantity)) } /// Calculate average price considering weight of each buy
+        let totalBuyQuantity = buyOrders.reduce(0) { $0 + $1.quantity }
+        let avgBuyPrice = totalBuyValue / Double(totalBuyQuantity)
+        let originalCost = avgBuyPrice * Double(order.quantity) /// Originally paid by users to buy shares
+        let soldValue = order.price * Double(order.quantity) /// Current market value for shares to be sold
+        let realizedPnL = soldValue - originalCost
         
         /// Calculate actual order transaction
         let deltaTransactionQuantity = totalStockOwned - order.quantity
         
+        /// When delta is 0, mark the ownedStock as finalized
         if deltaTransactionQuantity == 0 {
-            ownedStock.isFinalized = true /// Mark as this ownedStock isFinalized (mark this position complete)
-        } else {
-            modelContext.insert(order)
+            ownedStock.isFinalized = true
         }
+        ownedStock.orders.append(order)
         
-        /// Add potential revenue to user balance
-        user?.totalEquity = totalPotentialRevenue
+        /// Update users info
+        user?.totalEquity += realizedPnL /// Add realized to user's balance
+        user?.tradeableBalance += soldValue /// Market value become tradable balance
+        user?.investedBalance -= originalCost /// Remove original cost from invested
         
         try modelContext.save()
     }

@@ -31,7 +31,7 @@ struct OwnedStockCard: View {
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
                 Text(
-                    "<this stock total value>"
+                    "\(ownedStock.getTotalOwnedLot()) (<total in $>)"
                     //                    ownedStock.stock.getPriceByDate(currentDate)?.price ?? 0,
                     //                    format: .number.precision(.fractionLength(2))
                 )

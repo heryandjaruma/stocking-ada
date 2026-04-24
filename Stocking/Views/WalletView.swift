@@ -79,7 +79,7 @@ struct WalletView: View {
                         Button(action: {
                             isShowBalanceSheet.toggle()
                         }) {
-                            Text("Add Balance")
+                            Text("Set Balance")
                                 .bold()
                         }
                         .buttonStyle(.glass)
@@ -97,7 +97,7 @@ struct WalletView: View {
                                             .glassEffect(in: .circle)
                                     }
                                 }
-                                Text("Add Balance")
+                                Text("Set Balance")
                                     .font(.title3)
                                 TextField("Set Balance", text: $currentBalance)
                                     .keyboardType(.decimalPad)
@@ -153,7 +153,7 @@ struct WalletView: View {
                     HStack {
                         LazyVGrid(columns: columns, spacing: 20.0) {
                             VStack(alignment: .leading) {
-                                Text("$\(userData.tradeableBalance, specifier: "%.2f")")
+                                Text("$\(userData.totalEquity - userData.investedBalance, specifier: "%.2f")")
                                     .bold()
                                 Text("Trading Balance")
                                     .font(.caption)
