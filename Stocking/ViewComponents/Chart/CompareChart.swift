@@ -13,21 +13,39 @@ struct CompareChart: View {
 
     
     /// Normalize data relative to the first price to be comparable
-    private func normalizedData(for stock: Stock) -> [ChartDataPoint] {
-        let sorted = stock.priceHistory.sorted { $0.timestamp < $1.timestamp }
-        guard let baseline = sorted.first?.price, baseline != 0 else { return [] } /// Relative to the very first data point
-        return sorted.map {
-            ChartDataPoint(
-                date: $0.timestamp,
-                value: (($0.price - baseline) / baseline) * 100
-            )
-        }
-    }
+//    private func normalizedData(for stock: Stock) -> [ChartDataPoint] {
+//        let sorted = stock.priceHistory.sorted { $0.timestamp < $1.timestamp }
+//        guard let baseline = sorted.first?.price, baseline != 0 else { return [] } /// Relative to the very first data point
+//        return sorted.map {
+//            ChartDataPoint(
+//                date: $0.timestamp,
+//                value: (($0.price - baseline) / baseline) * 100
+//            )
+//        }
+//    }
 
     private func rangedData(for stock: Stock) -> [ChartDataPoint] {
-        let all = normalizedData(for: stock)
-        let filtered = selectedRange.filtered(all, appToday: appToday)
-        return filtered.isEmpty ? all : filtered  // fallback to all if not enough history
+        let sorted = stock.priceHistory.sorted { $0.timestamp < $1.timestamp }
+        guard !sorted.isEmpty else { return [] }
+
+        /// Filter to the selected range first
+        let allPoints = sorted.map {
+            ChartDataPoint(date: $0.timestamp, value: $0.price)
+        }
+        let filtered = selectedRange.filtered(allPoints, appToday: appToday)
+        let pointsToUse = filtered.isEmpty ? allPoints : filtered
+
+        /// relative to the FIRST price in that range
+        guard let baseline = pointsToUse.first?.value, baseline != 0 else {
+            return pointsToUse
+        }
+
+        return pointsToUse.map {
+            ChartDataPoint(
+                date: $0.date,
+                value: (($0.value - baseline) / baseline) * 100
+            )
+        }
     }
 
     private var primaryData: [ChartDataPoint] { rangedData(for: primary) }
@@ -156,7 +174,7 @@ struct CompareChart: View {
                         x: .value("Date", point.date),
                         y: .value("Change %", point.value)
                     )
-                    .interpolationMethod(.catmullRom)
+                    .interpolationMethod(.linear)
                     .lineStyle(
                         StrokeStyle(
                             lineWidth: 2
@@ -223,8 +241,11 @@ struct CompareChart: View {
                                         selectedDate = date
                                     }
                                 }
-                                .onEnded { _ in selectedDate = nil }
-                        )
+                            /// So the data not removed after tap
+//                                .onEnded { _ in selectedDate = nil }
+                        ).onTapGesture {
+                            selectedDate = nil
+                        }
                 }
             }
         }

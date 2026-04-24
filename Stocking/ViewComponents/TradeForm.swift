@@ -91,6 +91,7 @@ struct TradeForm: View {
                         Order(
                             timestamp: currentDate,
                             quantity: lot,
+                            stockSymbol: stock.symbol,
                             price: price,
                             orderType: orderType.rawValue,
                             side: orderSide.rawValue,
