@@ -1,50 +1,54 @@
 import SwiftUI
 
-
-
 struct TradeForm: View {
     var stock: Stock
+    var ownedStock: OwnedStock
     var currentDate: Date
-    
+
     /// To be passed by parent for transaction error
     @Binding var transactionAlert: TransactionAlert?
-    
+
     @State private var orderSide: OrderSide = .buy
     @State private var orderType: OrderType = .limit
     @State private var price: Double
-    @State private var lot: Int = 1
-    
+    @State private var share: Int = 1
+
     private var expiryOptions = ["Good For Day", "Good Till Canceled"]
     @State private var selectedExpiry = "Good For Day"
-    
-    // How many lots the user already owns (need to be connected to portfolio)
-    var ownedLots: Int = 0
-    
-    init(stock: Stock, currentDate: Date, ownedLots: Int = 0, onBuyOrSell: ((Order) -> Void)? = nil, transactionAlert: Binding<TransactionAlert?> = .constant(nil)) {
+
+    // How many shares the user already owns (need to be connected to portfolio)
+
+    init(
+        stock: Stock,
+        ownedStock: OwnedStock,
+        currentDate: Date,
+        onBuyOrSell: ((Order) -> Void)? = nil,
+        transactionAlert: Binding<TransactionAlert?> = .constant(nil)
+    ) {
         self.stock = stock
+        self.ownedStock = ownedStock
         self.currentDate = currentDate
-        self.ownedLots = ownedLots
         self.onBuyOrSell = onBuyOrSell
         self._transactionAlert = transactionAlert
         self.price = stock.getPriceByDate(currentDate)?.price ?? 0
     }
-    
+
     private var actionColor: Color {
         orderSide == .buy ? .green : .red
     }
-    
+
     /// Optional callback
     var onBuyOrSell: ((Order) -> Void)? = nil
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            
+
             HStack {
                 Text(orderSide == .buy ? "Buy" : "Sell")
                     .font(.title2.bold())
-                
+
                 Spacer()
-                
+
                 // Buy / Sell toggle
                 Picker("Side", selection: $orderSide) {
                     Text("Buy").tag(OrderSide.buy)
@@ -52,29 +56,33 @@ struct TradeForm: View {
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 110)
-                
+
                 Picker("Type", selection: $orderType) {
-                    ForEach(OrderType.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(OrderType.allCases, id: \.self) {
+                        Text($0.rawValue).tag($0)
+                    }
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 120)
             }
-            
-            // Owned lots hint
-            
-            Text("You currently own \(ownedLots) lot\(ownedLots == 1 ? "" : "s")")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            
+
+            // Owned shares hint
+
+            Text(
+                "You currently own \(ownedStock.getTotalOwnedShare()) share\(ownedStock.getTotalOwnedShare() == 1 ? "" : "s")"
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
             // MARK: Form fields
             VStack(spacing: 0) {
                 if orderType == .limit {
                     StepperRow(label: "Price", value: $price, step: 1)
                     Divider().padding(.leading, 16)
                 }
-                
-                IntStepperRow(label: "Lot", value: $lot, step: 1, minimum: 1)
-                
+
+                IntStepperRow(label: "Share", value: $share, step: 1, minimum: 1)
+
                 if orderType == .limit {
                     Divider().padding(.leading, 16)
                     ExpiryRow(options: expiryOptions, selected: $selectedExpiry)
@@ -84,14 +92,14 @@ struct TradeForm: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(Color(.systemGray4), lineWidth: 1)
             )
-            
+
             // MARK: Action buttons
             if orderSide == .buy {
                 ActionButton(label: "Buy", color: .green) {
                     onBuyOrSell!(
                         Order(
                             timestamp: currentDate,
-                            quantity: lot,
+                            quantity: share,
                             stockSymbol: stock.symbol,
                             price: price,
                             orderType: orderType.rawValue,
@@ -106,11 +114,11 @@ struct TradeForm: View {
                         onBuyOrSell!(
                             Order(
                                 timestamp: currentDate,
-                                quantity: lot,
+                                quantity: share,
                                 stockSymbol: stock.symbol,
                                 price: price,
                                 orderType: orderType.rawValue,
-                                side: orderSide.rawValue ,
+                                side: orderSide.rawValue,
                                 status: "Created",
                             ),
                         )
@@ -127,24 +135,28 @@ private struct StepperRow: View {
     @Binding var value: Double
     var step: Double = 1
     var minimum: Double = 0
-    
+
     var body: some View {
         HStack {
             Text(label)
                 .font(.system(size: 15))
             Spacer()
-            Button { if value - step >= minimum { value -= step } } label: {
+            Button {
+                if value - step >= minimum { value -= step }
+            } label: {
                 Image(systemName: "minus")
                     .frame(width: 28, height: 28)
                     .background(Circle().fill(Color(.systemGray5)))
             }
             .buttonStyle(.plain)
-            
+
             Text("\(value)")
                 .font(.system(size: 15, weight: .semibold))
                 .frame(minWidth: 44, alignment: .center)
-            
-            Button { value += step } label: {
+
+            Button {
+                value += step
+            } label: {
                 Image(systemName: "plus")
                     .frame(width: 28, height: 28)
                     .background(Circle().fill(Color(.systemGray5)))
@@ -161,24 +173,28 @@ private struct IntStepperRow: View {
     @Binding var value: Int
     var step: Int = 1
     var minimum: Int = 0
-    
+
     var body: some View {
         HStack {
             Text(label)
                 .font(.system(size: 15))
             Spacer()
-            Button { if value - step >= minimum { value -= step } } label: {
+            Button {
+                if value - step >= minimum { value -= step }
+            } label: {
                 Image(systemName: "minus")
                     .frame(width: 28, height: 28)
                     .background(Circle().fill(Color(.systemGray5)))
             }
             .buttonStyle(.plain)
-            
+
             Text("\(value)")
                 .font(.system(size: 15, weight: .semibold))
                 .frame(minWidth: 44, alignment: .center)
-            
-            Button { value += step } label: {
+
+            Button {
+                value += step
+            } label: {
                 Image(systemName: "plus")
                     .frame(width: 28, height: 28)
                     .background(Circle().fill(Color(.systemGray5)))
@@ -193,7 +209,7 @@ private struct IntStepperRow: View {
 private struct ExpiryRow: View {
     let options: [String]
     @Binding var selected: String
-    
+
     var body: some View {
         HStack {
             Text("Expiry")
@@ -229,7 +245,7 @@ private struct ActionButton: View {
     let label: String
     let color: Color
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text(label)
@@ -250,27 +266,36 @@ private func previewDate(_ offset: Int) -> Date {
 }
 
 #Preview {
+    var aapl = Stock(
+        symbol: "AAPL",
+        name: "Apple Inc.",
+        priceHistory: [
+            PriceHistory(timestamp: previewDate(-1), price: 256.00),
+            PriceHistory(timestamp: previewDate(0), price: 259.20),
+        ]
+    )
+    var ownedStock: OwnedStock = .init(
+        timestamp: .now,
+        stock: aapl,
+        stockSymbol: "AAPL"
+    )
     ScrollView {
         VStack(spacing: 32) {
             // Buy - Limit
-            TradeForm(stock: Stock(
-                symbol: "AAPL", name: "Apple Inc.",
-                priceHistory: [
-                    PriceHistory(timestamp: previewDate(-1), price: 256.00),
-                    PriceHistory(timestamp: previewDate(0), price: 259.20),
-                ]
-            ), currentDate: Date.now, ownedLots: 0)
-            
+            TradeForm(
+                stock: aapl,
+                ownedStock: ownedStock,
+                currentDate: Date.now
+            )
+
             Divider()
-            
-            // Sell - with owned lots
-            TradeForm(stock: Stock(
-                symbol: "AAPL", name: "Apple Inc.",
-                priceHistory: [
-                    PriceHistory(timestamp: previewDate(-1), price: 256.00),
-                    PriceHistory(timestamp: previewDate(0), price: 259.20),
-                ]
-            ), currentDate: Date.now, ownedLots: 6)
+
+            // Sell - with owned shares
+            TradeForm(
+                stock: aapl,
+                ownedStock: ownedStock,
+                currentDate: Date.now
+            )
         }
     }
 }

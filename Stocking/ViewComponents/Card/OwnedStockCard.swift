@@ -18,6 +18,23 @@ struct OwnedStockCard: View {
     }
     private var statusColor: Color { priceStatus.color }
     
+    private var calculatePriceChange: String {
+        let change = ownedStock.stock.changeForDate(currentDate)
+        return String(format: "%.2f", change)
+    }
+
+    private var calculateTotalPrice: String {
+        let price = ownedStock.stock.getPriceByDate(currentDate)?.price ?? 0
+        return String(format: "%.2f", Double(ownedStock.getTotalOwnedShare()) * price)
+    }
+
+    
+    private var calculatePnL: String {
+        let change = ownedStock.calculateUnrealizedPnLPercentage(currentDate: currentDate)
+        let sign = change > 0 ? "+" : ""
+        return "\(sign)\(String(format: "%.2f", change))"
+    }
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -30,26 +47,18 @@ struct OwnedStockCard: View {
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
-                Text(
-                    "\(ownedStock.getTotalOwnedLot()) (<total in $>)"
-                    //                    ownedStock.stock.getPriceByDate(currentDate)?.price ?? 0,
-                    //                    format: .number.precision(.fractionLength(2))
-                )
-                .font(.system(size: 14, weight: .semibold))
+                Text("\(ownedStock.getTotalOwnedShare()) ($\(calculateTotalPrice))")
+                    .font(.system(size: 14, weight: .semibold))
                 
-                Text(
-                    "<this stock pnl>"
-                    //                    ownedStock.stock.changeForDate(currentDate),
-                    //                    format: .number.precision(.fractionLength(2))
-                )
-                .foregroundStyle(.white)
-                .font(.system(size: 13, weight: .bold))
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(statusColor)
-                )
+                Text(calculatePnL)
+                    .foregroundStyle(.white)
+                    .font(.system(size: 13, weight: .bold))
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(statusColor)
+                    )
             }
             .frame(width: 70, alignment: .trailing)
         }
