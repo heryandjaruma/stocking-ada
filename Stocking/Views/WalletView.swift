@@ -117,7 +117,6 @@ struct WalletView: View {
                                 Button(action: {
                                     /// Do some checkings
                                     if let value = Double(currentBalance) {
-                                        print(currentBalance)
                                         onSaveBalance?(value)
                                         lastBalanceSaved = value
                                         isShowError = false

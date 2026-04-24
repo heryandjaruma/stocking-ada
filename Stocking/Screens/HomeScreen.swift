@@ -22,7 +22,7 @@ struct HomeScreen: View {
     var currentDateConfig: GlobalConfig? { configs.first }
     
     /// Get all stocks
-    @Query var stocks: [Stock]
+    @Query(sort: \Stock.symbol, order: .forward) var stocks: [Stock]
     
     /// Get user Stocking data
     @Query private var userData: [UserStockingData]
@@ -90,8 +90,7 @@ struct HomeScreen: View {
     }
     
     private func executeMarketBuy(order: Order) throws {
-        print("Executing Market Buy")
-        guard isBalanceSufficient(for: order) else {
+        guard !isBalanceSufficient(for: order) else {
             throw TransactionError.insufficientFunds
         }
         
@@ -113,8 +112,12 @@ struct HomeScreen: View {
         /// Attach new order attached to the ownedStock
         ownedStock.orders.append(order)
         
+        let orderValue = order.price * Double(order.quantity)
         /// Change user's invested balance
-        user?.investedBalance += order.price * Double(order.quantity)
+        user?.investedBalance += orderValue
+        
+        /// Substract user's equity
+        user?.totalEquity -= orderValue
         
         try modelContext.save()
     }

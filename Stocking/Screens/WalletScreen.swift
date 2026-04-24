@@ -32,6 +32,7 @@ struct WalletScreen: View {
             if let user {
                 WalletView(userData: user, equityHistory: equityHistory, ownedStocks: ownedStocks, currentDate: currentDateConfig?.dateValue ?? Date.now, onSaveBalance: { balance in
                     user.totalEquity = balance
+                    user.tradeableBalance = balance - user.investedBalance
                     modelContext.insert(user)
                 })
             } else { Color.clear } /// Needed so SwiftUI can re-render properly when condition becomes true
