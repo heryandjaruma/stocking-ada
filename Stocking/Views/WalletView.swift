@@ -13,6 +13,7 @@ struct WalletView: View {
     var equityHistory: [EquityHistory]
     var ownedStocks: [OwnedStock]
     var currentDate: Date
+    var orders: [Order] = []
     
     /// Computed property to convert EquityHistory into ChartDataPoint
     private var chartData: [ChartDataPoint] {
@@ -37,10 +38,11 @@ struct WalletView: View {
     @State private var currentBalance: String
     @State private var lastBalanceSaved: Double
     
-    init(userData: UserStockingData, equityHistory: [EquityHistory], ownedStocks: [OwnedStock], currentDate: Date, onSaveBalance: ((Double) -> Void)? = nil) {
+    init(userData: UserStockingData, equityHistory: [EquityHistory], ownedStocks: [OwnedStock], orders: [Order], currentDate: Date, onSaveBalance: ((Double) -> Void)? = nil) {
         self.userData = userData
         self.equityHistory = equityHistory
         self.ownedStocks = ownedStocks
+        self.orders = orders
         self.currentDate = currentDate
         _currentBalance = State(initialValue: String(userData.totalEquity)) /// Need to set to state variable in the init()
         lastBalanceSaved = userData.totalEquity
@@ -58,13 +60,14 @@ struct WalletView: View {
                     }
                     .frame(width: 200, alignment: .leading)
                     Spacer()
-                    Button(action: {
-                        
-                    }) {
+                    NavigationLink {
+                        OrderHistoryView(orders: orders)
+                    } label: {
                         Image(systemName: "clock.arrow.trianglehead.counterclockwise.rotate.90")
                     }
                     .controlSize(.large)
                     .buttonStyle(.glass)
+                    
                 }
                 
                 VStack {
@@ -219,7 +222,12 @@ struct WalletView: View {
 private func previewDate(_ offset: Int) -> Date {
     Calendar.current.date(byAdding: .hour, value: offset, to: Date())!
 }
-
+let orders = [
+    Order(timestamp: Date.now, quantity: 6, stockSymbol: "AAPL", price: 70.0, orderType: "Market", side: "Buy", expiry: "GTC", status: "Created"),
+    Order(timestamp: Date.now, quantity: 6, stockSymbol: "AAPL", price: 70.0, orderType: "Market", side: "Sell", expiry: "GTC", status: "Created"),
+    Order(timestamp: Date.now, quantity: 6, stockSymbol: "AAPL", price: 70.0, orderType: "Market", side: "Sell", expiry: "GTC", status: "Filled"),
+    Order(timestamp: Date.now, quantity: 6, stockSymbol: "AAPL", price: 70.0, orderType: "Market", side: "Buy", expiry: "GTC", status: "Canceled"),
+]
 #Preview {
     let userData = UserStockingData(totalEquity: 100.0, tradeableBalance: 67.0, investedBalance: 33.0)
     
@@ -237,7 +245,8 @@ private func previewDate(_ offset: Int) -> Date {
     let ownedStocks: [OwnedStock] = [
         OwnedStock(timestamp: Date.now, stock: Stock(symbol: "AAPL", name: "Apple Inc."), stockSymbol: "AAPL")
     ]
-    WalletView(userData: userData, equityHistory: previewEquityHistory, ownedStocks: ownedStocks, currentDate: Date.now)
+    
+    WalletView(userData: userData, equityHistory: previewEquityHistory, ownedStocks: ownedStocks, orders: orders, currentDate: Date.now)
 }
 
 #Preview("StockOwnedEmpty") {
@@ -257,5 +266,5 @@ private func previewDate(_ offset: Int) -> Date {
     let ownedStocks: [OwnedStock] = [
 //        OwnedStock(timestamp: Date.now, stock: Stock(symbol: "AAPL", name: "Apple Inc."), stockSymbol: "AAPL")
     ]
-    WalletView(userData: userData, equityHistory: previewEquityHistory, ownedStocks: ownedStocks, currentDate: Date.now)
+    WalletView(userData: userData, equityHistory: previewEquityHistory, ownedStocks: ownedStocks, orders: orders, currentDate: Date.now)
 }
