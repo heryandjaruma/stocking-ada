@@ -4,87 +4,149 @@ import SwiftUI
 import Foundation
 
 struct PriceChart: View {
-//    var stock: Stock
     let data: [ChartDataPoint]
     var ruleDate: Date? = nil
+    var maxPoints: Int = 60
 
-    private var firstValue: Double { data.first?.value ?? 0 }
-    private var lastValue:  Double { data.last?.value  ?? 0 }
+    @State private var selectedDate: Date? = nil
+
+    // Downsample evenly to maxPoints
+    private var sampledData: [ChartDataPoint] {
+        guard data.count > maxPoints else { return data }
+        let step = data.count / maxPoints
+        return stride(from: 0, to: data.count, by: step).map { data[$0] }
+    }
+
+    private var firstValue: Double { sampledData.first?.value ?? 0 }
+    private var lastValue:  Double { sampledData.last?.value  ?? 0 }
 
     private var trend: PriceStatus {
-        if lastValue > firstValue { return .rising }
+        if lastValue > firstValue { return .rising  }
         if lastValue < firstValue { return .falling }
         return .neutral
     }
 
     private var trendColor: Color { trend.color }
 
+    private func nearestPoint(to date: Date) -> ChartDataPoint? {
+        sampledData.min {
+            abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
+        }
+    }
+
     var body: some View {
-        Chart {
-            ForEach(data) { point in
-                AreaMark(
-                    x: .value("Date", point.date),
-                    y: .value("Value", point.value)
-                )
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [trendColor.opacity(0.4), .clear],
-                        startPoint: .top,
-                        endPoint: .bottom
+        VStack(alignment: .leading, spacing: 6) {
+
+            // Crosshair value header
+            HStack {
+                if let date = selectedDate, let point = nearestPoint(to: date) {
+                    Text("$\(point.value, specifier: "%.2f")")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(trendColor)
+
+                    Text(point.date, format: .dateTime.month(.abbreviated).day().year())
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            .frame(height: 18) // reserve space so chart doesn't jump
+
+            Chart {
+                ForEach(sampledData) { point in
+                    AreaMark(
+                        x: .value("Date", point.date),
+                        y: .value("Value", point.value)
                     )
-                )
-                .interpolationMethod(.catmullRom)
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [trendColor.opacity(0.4), .clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .interpolationMethod(.linear)
 
-                LineMark(
-                    x: .value("Date", point.date),
-                    y: .value("Value", point.value)
-                )
-                .foregroundStyle(trendColor)
-                .lineStyle(StrokeStyle(lineWidth: 2))
-                .interpolationMethod(.catmullRom)
-            }
-
-            if let ruleDate {
-                RuleMark(x: .value("Marker", ruleDate))
-                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
-                    .foregroundStyle(.secondary.opacity(0.4))
-            }
-        }
-        .chartXAxis {
-            AxisMarks { value in
-                AxisValueLabel()
-                    .font(.system(size: 11).bold())
-
-                AxisGridLine()
-                    .foregroundStyle(.gray.opacity(0.5))
-            }
-        }
-
-        .chartYAxis {
-            AxisMarks(position: .trailing) { value in
-                AxisValueLabel {
-                    if let v = value.as(Double.self) {
-                        Text("\(v, specifier: "%.0f")")
-                            .font(.system(size: 11).bold())
-                    }
+                    LineMark(
+                        x: .value("Date", point.date),
+                        y: .value("Value", point.value)
+                    )
+                    .foregroundStyle(trendColor)
+                    .lineStyle(StrokeStyle(lineWidth: 2))
+                    .interpolationMethod(.linear)
                 }
 
-                AxisGridLine()
-                    .foregroundStyle(.gray.opacity(0.5))
+                // Static rule date marker
+                if let ruleDate {
+                    RuleMark(x: .value("Marker", ruleDate))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                        .foregroundStyle(.secondary.opacity(0.4))
+                }
+
+                // Crosshair
+                if let date = selectedDate, let point = nearestPoint(to: date) {
+                    RuleMark(x: .value("Selected", point.date))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                        .foregroundStyle(.secondary.opacity(0.6))
+
+                    PointMark(
+                        x: .value("Date", point.date),
+                        y: .value("Value", point.value)
+                    )
+                    .symbolSize(50)
+                    .foregroundStyle(trendColor)
+                }
+            }
+            .chartXAxis {
+                AxisMarks { value in
+                    AxisValueLabel().font(.system(size: 11).bold())
+                    AxisGridLine().foregroundStyle(.gray.opacity(0.5))
+                }
+            }
+            .chartYAxis {
+                AxisMarks(position: .trailing) { value in
+                    AxisValueLabel {
+                        if let v = value.as(Double.self) {
+                            Text("\(v, specifier: "%.0f")").font(.system(size: 11).bold())
+                        }
+                    }
+                    AxisGridLine().foregroundStyle(.gray.opacity(0.5))
+                }
+            }
+            .chartYScale(domain: chartYDomain)
+            .chartXScale(domain: chartXDomain)
+            .clipped()
+            .chartOverlay { proxy in
+                GeometryReader { geo in
+                    Rectangle()
+                        .fill(.clear)
+                        .contentShape(Rectangle())
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { value in
+                                    let origin = geo[proxy.plotFrame!].origin
+                                    let x = value.location.x - origin.x
+                                    if let date: Date = proxy.value(atX: x) {
+                                        selectedDate = date
+                                    }
+                                }
+                            // Sticky: no onEnded clear
+                        )
+                        .onTapGesture {
+                            selectedDate = nil // tap to dismiss
+                        }
+                }
             }
         }
-        .chartYScale(domain: chartYDomain)
-        .chartXScale(domain: chartXDomain)
-        .clipped()
     }
 
     private var chartXDomain: ClosedRange<Date> {
-        guard let first = data.map(\.date).min(),
-              let last  = data.map(\.date).max()
+        guard let first = sampledData.map(\.date).min(),
+              let last  = sampledData.map(\.date).max()
         else { return Date()...Date() }
         return first...last
     }
-    
+
     private var chartYDomain: ClosedRange<Double> {
         guard let min = data.map(\.value).min(),
               let max = data.map(\.value).max(),
@@ -92,77 +154,5 @@ struct PriceChart: View {
         else { return 0...1 }
         let padding = (max - min) * 0.1
         return (min - padding)...(max + padding)
-    }
-}
-
-// MARK: - Preview helpers
-
-private func previewDate(_ offset: Int) -> Date {
-    Calendar.current.date(byAdding: .hour, value: offset, to: Date())!
-}
-
-private let previewStockData: [ChartDataPoint] = [
-    .init(date: previewDate(-8),  value: 267.20),
-    .init(date: previewDate(-7),  value: 266.80),
-    .init(date: previewDate(-6),  value: 269.50),
-    .init(date: previewDate(-5),  value: 272.10),
-    .init(date: previewDate(-4),  value: 271.80),
-    .init(date: previewDate(-3),  value: 270.40),
-    .init(date: previewDate(-2),  value: 269.90),
-    .init(date: previewDate(-1),  value: 270.60),
-    .init(date: previewDate(0),   value: 270.80),
-]
-
-private let previewBalanceData: [ChartDataPoint] = [
-    .init(date: previewDate(-8),  value: 50.00),
-    .init(date: previewDate(-6),  value: 52.30),
-    .init(date: previewDate(-4),  value: 51.80),
-    .init(date: previewDate(-2),  value: 60.75),
-    .init(date: previewDate(0),   value: 67.00),
-]
-
-#Preview {
-    VStack(spacing: 24) {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("TSLA — Stock").font(.headline)
-            PriceChart(data: previewStockData, ruleDate: previewDate(-3))
-                .frame(height: 200)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-        }
-
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Total Equity — Balance").font(.headline)
-            PriceChart(data: previewBalanceData)
-                .frame(height: 200)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-        }
-    }
-    .padding()
-}
-
-import Foundation
-
-struct PriceRecord: Codable {
-    let price: Double
-    let timestamp: Date
-}
-
-#Preview("Balance History") {
-    let url = Bundle.main.url(forResource: "WMT", withExtension: "json")!
-    let data = try! Data(contentsOf: url)
-    
-    let decoder = JSONDecoder()
-    decoder.dateDecodingStrategy = .iso8601
-    let records = try! decoder.decode([PriceRecord].self, from: data)
-    
-    let chartData = records.map { record in
-        ChartDataPoint(date: record.timestamp, value: record.price)
-    }
-    
-    return VStack(alignment: .leading, spacing: 8) {
-        Text("My Balance").font(.headline)
-        PriceChart(data: chartData)
-            .frame(height: 200)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
