@@ -10,28 +10,49 @@ import SwiftData
 
 struct OrderHistoryView: View {
     var orders: [Order]
-    
-    var reversedOrders: [Order] {
-        return orders.reversed()
+
+    private var groupedOrders: [(date: Date, orders: [Order])] {
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: orders.reversed()) { order in
+            calendar.startOfDay(for: order.timestamp)
+        }
+        return grouped
+            .map { (date: $0.key, orders: $0.value) }
+            .sorted { $0.date > $1.date }
     }
 
     var body: some View {
         ScrollView {
-            LazyVStack {
-                if reversedOrders.isEmpty {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                if groupedOrders.isEmpty {
                     ContentUnavailableView(
                         "No Orders Yet",
                         systemImage: "chart.line.flattrend.xyaxis",
                         description: Text("You haven't bought anything yet.")
                     )
                 } else {
-                    ForEach(reversedOrders) { order in
-                        OrderCard(order: order)
+                    ForEach(groupedOrders, id: \.date) { group in
+                        Section {
+                            ForEach(group.orders) { order in
+                                OrderCard(order: order)
+                                    .padding(.horizontal)
+                            }
+                        } header: {
+                            Text(group.date, format: .dateTime.day().month(.wide).year())
+                                .font(.footnote.bold())
+                                .foregroundStyle(.secondary)
+                                .padding(.top, 16)
+                                .padding(.bottom, 4)
+                                .padding(.horizontal)
+                            Divider()
+                                .padding(.bottom, 10)
+                        }
                     }
                 }
             }
-            .padding()
+            .padding(.bottom)
         }
+        .navigationTitle("Order History")
     }
 }
 

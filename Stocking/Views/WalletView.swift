@@ -43,9 +43,9 @@ struct WalletView: View {
     }
 
     private var gainData: Double {
-        let lastEquity = timeRangedEquityHistory.last!.totalEquity
-        let firstEquity = timeRangedEquityHistory.first!.totalEquity
-        return lastEquity - firstEquity
+        guard let first = timeRangedEquityHistory.first?.totalEquity,
+              let last = timeRangedEquityHistory.last?.totalEquity else { return 0 }
+        return last - first
     }
 
     let columns = [
@@ -205,7 +205,9 @@ struct WalletView: View {
                 }
 
                 PriceChart(
-                    data: selectedRange.filtered(chartData, appToday: currentDate)
+                    data: timeRangedEquityHistory.map {
+                        ChartDataPoint(date: $0.timestamp, value: $0.totalEquity)
+                    }
                 )
                 .frame(height: 200)
 

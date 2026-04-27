@@ -20,6 +20,9 @@ struct HomeScreen: View {
     )
     private var configs: [GlobalConfig]
     var currentDateConfig: GlobalConfig? { configs.first }
+    
+    /// Get Equity History
+    @Query(sort: \EquityHistory.timestamp, order: .forward) private var equityHistory: [EquityHistory]
 
     /// Get all stocks
     @Query(sort: \Stock.symbol, order: .forward) var stocks: [Stock]
@@ -40,32 +43,31 @@ struct HomeScreen: View {
             orders: orders,
             onForwardDay: {
                 guard let config = currentDateConfig,
-                    let currentDate = config.dateValue
-                else { return }
+                      let currentDate = config.dateValue else { return }
 
-                let newDate = Calendar.current.date(
-                    byAdding: .day,
-                    value: 1,
-                    to: currentDate
-                )!
+                let newDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
                 config.dateValue = newDate
 
                 if let user {
-                    let snapshot = EquityHistory(
-                        totalEquity: user.totalEquity,
-                        timestamp: newDate
-                    )
-                    modelContext.insert(snapshot)
-                    print(
-                        "Inserted equity snapshot: \(newDate) → \(user.totalEquity)"
-                    )
+                    var utcCalendar = Calendar(identifier: .gregorian)
+                    utcCalendar.timeZone = TimeZone(identifier: "UTC")!
+                    let startOfNewDate = utcCalendar.startOfDay(for: newDate)
+
+                    // Only insert if no snapshot exists for this day yet
+                    let alreadyExists = equityHistory.contains {
+                        utcCalendar.startOfDay(for: $0.timestamp) == startOfNewDate
+                    }
+                    if !alreadyExists {
+                        modelContext.insert(EquityHistory(
+                            totalEquity: user.totalEquity,
+                            timestamp: startOfNewDate
+                        ))
+                    }
                 }
 
-                try? modelContext.save()
-            },
-            onProcessPendingLimitOrders: {
                 try? processPendingLimitOrders()
             },
+            // removed onProcessPendingLimitOrders
             onBuyOrSell: { order in
                 do {
                     try onBuyOrSellStock(order: order)
@@ -145,22 +147,23 @@ struct HomeScreen: View {
             throw TransactionError.insufficientStocks
         }
 
-        order.price  = slippage(order.price)
+        order.price = slippage(order.price)
         order.status = "Filled"
 
-        let realizedPnL  = calculateRealizedPnL(for: order, in: ownedStock)
-        let originalCost = averageBuyPrice(in: ownedStock) * Double(order.quantity)
-        let soldValue    = order.price * Double(order.quantity)
+        let realizedPnL = calculateRealizedPnL(for: order, in: ownedStock)
+        let originalCost =
+            averageBuyPrice(in: ownedStock) * Double(order.quantity)
+        let soldValue = order.price * Double(order.quantity)
 
-        ownedStock.orders.append(order) // append FIRST
+        ownedStock.orders.append(order)  // append FIRST
 
         if ownedStock.getTotalOwnedShare() == 0 {
             ownedStock.isFinalized = true
         }
 
-        user?.totalEquity      += realizedPnL
+        user?.totalEquity += realizedPnL
         user?.tradeableBalance += soldValue
-        user?.investedBalance  -= originalCost
+        user?.investedBalance -= originalCost
 
         try modelContext.save()
     }
@@ -224,23 +227,26 @@ struct HomeScreen: View {
         try modelContext.save()
     }
 
-    private func approveLimitOrderSell(order: Order, ownedStock: OwnedStock) throws {
+    private func approveLimitOrderSell(order: Order, ownedStock: OwnedStock)
+        throws
+    {
         order.status = "Filled"
 
-        let realizedPnL  = calculateRealizedPnL(for: order, in: ownedStock)
-        let originalCost = averageBuyPrice(in: ownedStock) * Double(order.quantity)
-        let soldValue    = order.price * Double(order.quantity)
+        let realizedPnL = calculateRealizedPnL(for: order, in: ownedStock)
+        let originalCost =
+            averageBuyPrice(in: ownedStock) * Double(order.quantity)
+        let soldValue = order.price * Double(order.quantity)
 
-        ownedStock.orders.append(order) // append FIRST
+        ownedStock.orders.append(order)  // append FIRST
 
         // Now check AFTER appending so getTotalOwnedShare reflects the sell
         if ownedStock.getTotalOwnedShare() == 0 {
             ownedStock.isFinalized = true
         }
 
-        user?.totalEquity      += realizedPnL
+        user?.totalEquity += realizedPnL
         user?.tradeableBalance += soldValue
-        user?.investedBalance  -= originalCost
+        user?.investedBalance -= originalCost
 
         try modelContext.save()
     }
@@ -278,8 +284,13 @@ struct HomeScreen: View {
 
                 // Clean up orphaned OwnedStock with 0 shares
                 if order.side == "Buy",
-                   let orphan = try? findOwnedStockWithIsFinalizedByStockSymbol(false, order.stockSymbol),
-                   orphan.getTotalOwnedShare() == 0 {
+                    let orphan =
+                        try? findOwnedStockWithIsFinalizedByStockSymbol(
+                            false,
+                            order.stockSymbol
+                        ),
+                    orphan.getTotalOwnedShare() == 0
+                {
                     modelContext.delete(orphan)
                 }
 
