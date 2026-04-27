@@ -39,12 +39,28 @@ struct HomeScreen: View {
             stocks: stocks,
             orders: orders,
             onForwardDay: {
-                guard let config = currentDateConfig else { return }
-                config.dateValue = Calendar.current.date(
+                guard let config = currentDateConfig,
+                    let currentDate = config.dateValue
+                else { return }
+
+                let newDate = Calendar.current.date(
                     byAdding: .day,
                     value: 1,
-                    to: config.dateValue!
+                    to: currentDate
                 )!
+                config.dateValue = newDate
+
+                if let user {
+                    let snapshot = EquityHistory(
+                        totalEquity: user.totalEquity,
+                        timestamp: newDate
+                    )
+                    modelContext.insert(snapshot)
+                    print(
+                        "Inserted equity snapshot: \(newDate) → \(user.totalEquity)"
+                    )
+                }
+
                 try? modelContext.save()
             },
             onProcessPendingLimitOrders: {
@@ -129,58 +145,65 @@ struct HomeScreen: View {
             throw TransactionError.insufficientStocks
         }
 
-        order.price = slippage(order.price)
+        order.price  = slippage(order.price)
         order.status = "Filled"
 
-        let realizedPnL = calculateRealizedPnL(for: order, in: ownedStock)
-        let originalCost =
-            averageBuyPrice(in: ownedStock) * Double(order.quantity)
-        let soldValue = order.price * Double(order.quantity)
+        let realizedPnL  = calculateRealizedPnL(for: order, in: ownedStock)
+        let originalCost = averageBuyPrice(in: ownedStock) * Double(order.quantity)
+        let soldValue    = order.price * Double(order.quantity)
 
-        if ownedStock.getTotalOwnedShare() - order.quantity == 0 {
+        ownedStock.orders.append(order) // append FIRST
+
+        if ownedStock.getTotalOwnedShare() == 0 {
             ownedStock.isFinalized = true
         }
-        ownedStock.orders.append(order)
 
-        user?.totalEquity += realizedPnL
+        user?.totalEquity      += realizedPnL
         user?.tradeableBalance += soldValue
-        user?.investedBalance -= originalCost
+        user?.investedBalance  -= originalCost
 
         try modelContext.save()
     }
 
     // MARK: - Limit Order
 
-
     /// Returns true if the order is still valid (not expired)
     private func isLimitOrderActive(for order: Order) -> Bool {
-        let currentDate = currentDateConfig?.dateValue ?? Date()
-        guard order.expiry == "GTD" || order.expiry == "GFD" else {
-            return true /// GTC never expires
+        // GTC never expires
+        guard order.expiry == "Good For Day" else {
+            return true
         }
+
         let calendar = Calendar.current
         let orderDay = calendar.startOfDay(for: order.timestamp)
-        let currentDay = calendar.startOfDay(for: currentDate)
-        let isActive = orderDay >= currentDay
+        let currentDay = calendar.startOfDay(
+            for: currentDateConfig?.dateValue ?? .now
+        )
 
-        if !isActive {
-            order.status = "Expired"
-        }
-
-        return isActive
+        // GTD/GFD is only valid on the day it was placed
+        return orderDay == currentDay
     }
 
     /// Returns true if limit buy should fill: limit price >= current market price
     private func shouldFillLimitBuy(for order: Order, in stock: Stock) -> Bool {
-        guard let marketPrice = stock.getPriceByDate((currentDateConfig?.dateValue)!)?.price else {
+        guard
+            let marketPrice = stock.getPriceByDate(
+                (currentDateConfig?.dateValue)!
+            )?.price
+        else {
             return false
         }
         return order.price >= marketPrice
     }
 
     /// Returns true if limit sell should fill: limit price <= current market price
-    private func shouldFillLimitSell(for order: Order, in stock: Stock) -> Bool {
-        guard let marketPrice = stock.getPriceByDate((currentDateConfig?.dateValue)!)?.price else {
+    private func shouldFillLimitSell(for order: Order, in stock: Stock) -> Bool
+    {
+        guard
+            let marketPrice = stock.getPriceByDate(
+                (currentDateConfig?.dateValue)!
+            )?.price
+        else {
             return false
         }
         return order.price <= marketPrice
@@ -188,12 +211,14 @@ struct HomeScreen: View {
 
     // MARK: - Limit Order Approval
 
-    private func approveLimitOrderBuy(order: Order, ownedStock: OwnedStock) throws {
+    private func approveLimitOrderBuy(order: Order, ownedStock: OwnedStock)
+        throws
+    {
         order.status = "Filled"
-        ownedStock.orders.append(order)
+        ownedStock.orders.append(order)  // now attached at fill time
 
         let orderValue = order.price * Double(order.quantity)
-        user?.investedBalance  += orderValue
+        user?.investedBalance += orderValue
         user?.tradeableBalance -= orderValue
 
         try modelContext.save()
@@ -206,10 +231,12 @@ struct HomeScreen: View {
         let originalCost = averageBuyPrice(in: ownedStock) * Double(order.quantity)
         let soldValue    = order.price * Double(order.quantity)
 
-        if ownedStock.getTotalOwnedShare() - order.quantity == 0 {
+        ownedStock.orders.append(order) // append FIRST
+
+        // Now check AFTER appending so getTotalOwnedShare reflects the sell
+        if ownedStock.getTotalOwnedShare() == 0 {
             ownedStock.isFinalized = true
         }
-        ownedStock.orders.append(order)
 
         user?.totalEquity      += realizedPnL
         user?.tradeableBalance += soldValue
@@ -224,58 +251,66 @@ struct HomeScreen: View {
         guard isBalanceSufficient(for: order) else {
             throw TransactionError.insufficientFunds
         }
-
-        let stock      = try findStock(symbol: order.stockSymbol)
-        let ownedStock = try findOrCreateOwnedStock(for: stock, symbol: order.stockSymbol)
-
+        // Don't create OwnedStock here — only create it when approved
         order.status = "Created"
-        ownedStock.orders.append(order)
-
+        modelContext.insert(order)
         try modelContext.save()
     }
 
     private func executeLimitSell(order: Order) throws {
         let ownedStock = try findActiveOwnedStock(symbol: order.stockSymbol)
-
         guard order.quantity <= ownedStock.getTotalOwnedShare() else {
             throw TransactionError.insufficientStocks
         }
-
         order.status = "Created"
         ownedStock.orders.append(order)
-
         try modelContext.save()
     }
 
     // MARK: - Day Forward: process all pending limit orders
 
     func processPendingLimitOrders() throws {
-        print(currentDateConfig?.dateValue ?? "no date")
-        print(orders)
         let pending = try fetchPendingLimitOrders()
 
         for order in pending {
-            let stock = try findStock(symbol: order.stockSymbol)
-
             guard isLimitOrderActive(for: order) else {
-                order.status = "Canceled"
+                order.status = "Expired"
+
+                // Clean up orphaned OwnedStock with 0 shares
+                if order.side == "Buy",
+                   let orphan = try? findOwnedStockWithIsFinalizedByStockSymbol(false, order.stockSymbol),
+                   orphan.getTotalOwnedShare() == 0 {
+                    modelContext.delete(orphan)
+                }
+
                 try modelContext.save()
                 continue
             }
 
+            let stock = try findStock(symbol: order.stockSymbol)
+
             if order.side == "Buy", shouldFillLimitBuy(for: order, in: stock) {
-                let ownedStock = try findOrCreateOwnedStock(for: stock, symbol: order.stockSymbol)
+                let ownedStock = try findOrCreateOwnedStock(
+                    for: stock,
+                    symbol: order.stockSymbol
+                )
                 try approveLimitOrderBuy(order: order, ownedStock: ownedStock)
 
-            } else if order.side == "Sell", shouldFillLimitSell(for: order, in: stock) {
-                let ownedStock = try findActiveOwnedStock(symbol: order.stockSymbol)
+            } else if order.side == "Sell",
+                shouldFillLimitSell(for: order, in: stock)
+            {
+                let ownedStock = try findActiveOwnedStock(
+                    symbol: order.stockSymbol
+                )
                 try approveLimitOrderSell(order: order, ownedStock: ownedStock)
             }
         }
     }
 
     private func fetchPendingLimitOrders() throws -> [Order] {
-        let predicate  = #Predicate<Order> { $0.orderType == "Limit" && $0.status == "Created" }
+        let predicate = #Predicate<Order> {
+            $0.orderType == "Limit" && $0.status == "Created"
+        }
         let descriptor = FetchDescriptor<Order>(predicate: predicate)
         return try modelContext.fetch(descriptor)
     }

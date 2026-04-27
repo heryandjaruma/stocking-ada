@@ -56,17 +56,20 @@ struct StockingApp: App {
     /// GLOBAL CONFIG
     func seedGlobalConfigIfNeeded(context: ModelContext) {
         let existing = try? context.fetch(FetchDescriptor<GlobalConfig>())
-        /// Try and catch something
-        /// No exclamation mark!
         guard existing?.isEmpty == true else { return }
 
-        /// CURRENT DATE
-        /// Define config date as today
-        let currentDateConfig = GlobalConfig(
-            key: "currentDate",
-            dateValue: Date.now
-        )
+        // Start app date at last seeded equity history date
+        let equityHistory = (try? context.fetch(
+            FetchDescriptor<EquityHistory>(sortBy: [SortDescriptor(\.timestamp, order: .reverse)])
+        )) ?? []
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        let startDate = equityHistory.first?.timestamp ?? calendar.startOfDay(for: Date.now)
+
+        let currentDateConfig = GlobalConfig(key: "currentDate", dateValue: startDate)
         context.insert(currentDateConfig)
+        try? context.save()
     }
 
     /// EQUITY (balance)
