@@ -4,13 +4,13 @@ import SwiftUI
 struct StockCard: View, Equatable {
     var stock: Stock
     var currentDate: Date
-
+    
     private var priceStatus: PriceStatus {
         let change = stock.changeForDate(currentDate)
         if change > 0 { return .rising } else if change < 0 { return .falling }
         return .neutral
     }
-
+    
     private var statusColor: Color { priceStatus.color }
     
     private var timeRangedStockPriceHistory: [PriceHistory] {
@@ -20,6 +20,11 @@ struct StockCard: View, Equatable {
         }
     }
     
+    private var chartPrices: [Double] { timeRangedStockPriceHistory.map(\.price) }
+    private var chartMin: Double { (chartPrices.min() ?? 0) }
+    private var chartMax: Double { (chartPrices.max() ?? 1) }
+    private var chartPadding: Double { (chartMax - chartMin) * 0.3 }
+    
     func calculateAveragePrice() -> Double {
         var total = 0.0
         for priceHistory in timeRangedStockPriceHistory {
@@ -27,7 +32,7 @@ struct StockCard: View, Equatable {
         }
         return total / Double(timeRangedStockPriceHistory.count)
     }
-
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -39,14 +44,15 @@ struct StockCard: View, Equatable {
                     .foregroundStyle(.gray)
             }
             .frame(width: 100, alignment: .leading)
-
+            
             Spacer()
-
+            
             Chart {
                 ForEach(timeRangedStockPriceHistory, id: \.timestamp) { item in
                     AreaMark(
                         x: .value("Date", item.timestamp),
-                        y: .value("Price", item.price)
+                        yStart: .value("Min", chartMin - chartPadding),
+                        yEnd: .value("Price", item.price)
                     )
                     .foregroundStyle(
                         LinearGradient(
@@ -55,29 +61,36 @@ struct StockCard: View, Equatable {
                             endPoint: .bottom
                         )
                     )
-
+                    
                     LineMark(
                         x: .value("Date", item.timestamp),
                         y: .value("Price", item.price)
                     )
                     .foregroundStyle(statusColor)
                 }
-
+                
                 RuleMark(y: .value("Threshold", self.calculateAveragePrice()))
                     .lineStyle(StrokeStyle(lineWidth: 2, dash: [10, 5]))
                     .foregroundStyle(statusColor.opacity(0.6))
             }
-            .frame(width: 100, height: 50)
+            .chartYScale(domain: {
+                let prices = timeRangedStockPriceHistory.map(\.price)
+                let min = prices.min() ?? 0
+                let max = prices.max() ?? 1
+                let padding = (max - min) * 0.3
+                return (min - padding)...(max + padding)
+            }())
             .chartXAxis(.hidden)
             .chartYAxis(.hidden)
-
+            .frame(width: 100, height: 50)
+            
             VStack(alignment: .trailing, spacing: 4) {
                 Text(
                     timeRangedStockPriceHistory.last?.price ?? 0,
                     format: .number.precision(.fractionLength(2))
                 )
                 .font(.system(size: 14, weight: .semibold))
-
+                
                 Text(
                     stock.changeForDate(currentDate),
                     format: .number.precision(.fractionLength(2))

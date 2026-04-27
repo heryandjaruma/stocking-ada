@@ -33,6 +33,14 @@ struct WalletView: View {
             )
         }
     }
+    
+    private var pnlData: Double {
+        let pnlTotal = ownedStocks.reduce(0.0) { acc, ownedStock in
+            let price = ownedStock.stock.getPriceByDate(currentDate)?.price ?? 0.0
+            return acc + Double(ownedStock.getTotalOwnedShare()) * price
+        }
+        return pnlTotal
+    }
 
     private var gainData: Double {
         let lastEquity = timeRangedEquityHistory.last!.totalEquity
@@ -222,12 +230,15 @@ struct WalletView: View {
 
                             VStack(alignment: .leading) {
                                 //                                Text("$\(pnlData, specifier: "%.2f")")
-                                Text("$<PnL>")
+                                Text("$\(pnlData, specifier: "%.2f")")
                                     .bold()
                                 Text("PnL")
                                     .font(.caption)
                             }
-                            .foregroundStyle(.green)
+                            .foregroundStyle(
+                                pnlData > 0
+                                    ? .green : (pnlData < 0 ? .red : .gray)
+                            )
                             VStack(alignment: .leading) {
                                 Text("$\(gainData, specifier: "%.2f")")
 
