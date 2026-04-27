@@ -16,7 +16,13 @@ struct WalletView: View {
     var orders: [Order] = []
 
     @State private var selectedRange: ChartRange = .oneMonth
-
+    
+    private var timeRangedEquityHistory: [EquityHistory] {
+        let someTimeAgo: Date = selectedRange.startDate(from: currentDate)
+        return equityHistory.filter {
+            $0.timestamp >= someTimeAgo && $0.timestamp <= currentDate
+        }
+    }
     
     /// Computed property to convert EquityHistory into ChartDataPoint
     private var chartData: [ChartDataPoint] {
@@ -29,8 +35,8 @@ struct WalletView: View {
     }
 
     private var gainData: Double {
-        let lastEquity = equityHistory.last!.totalEquity
-        let firstEquity = equityHistory.first!.totalEquity
+        let lastEquity = timeRangedEquityHistory.last!.totalEquity
+        let firstEquity = timeRangedEquityHistory.first!.totalEquity
         return lastEquity - firstEquity
     }
 

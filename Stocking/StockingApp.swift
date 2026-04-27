@@ -38,8 +38,8 @@ struct StockingApp: App {
 
     /// Run seeds
     init() {
-        seedEquityHistoryIfNeeded(context: sharedModelContainer.mainContext)
         seedGlobalConfigIfNeeded(context: sharedModelContainer.mainContext)
+        seedEquityHistoryIfNeeded(context: sharedModelContainer.mainContext)
         seedStockIfNeeded(context: sharedModelContainer.mainContext)
         seedBalanceIfNeeded(context: sharedModelContainer.mainContext)
         seedNewsIfNeeded(context: sharedModelContainer.mainContext)
@@ -58,14 +58,9 @@ struct StockingApp: App {
         let existing = try? context.fetch(FetchDescriptor<GlobalConfig>())
         guard existing?.isEmpty == true else { return }
 
-        // Start app date at last seeded equity history date
-        let equityHistory = (try? context.fetch(
-            FetchDescriptor<EquityHistory>(sortBy: [SortDescriptor(\.timestamp, order: .reverse)])
-        )) ?? []
-
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "UTC")!
-        let startDate = equityHistory.first?.timestamp ?? calendar.startOfDay(for: Date.now)
+        let startDate = calendar.startOfDay(for: Date.now)
 
         let currentDateConfig = GlobalConfig(key: "currentDate", dateValue: startDate)
         context.insert(currentDateConfig)
