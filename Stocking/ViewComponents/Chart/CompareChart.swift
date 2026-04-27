@@ -105,7 +105,7 @@ struct CompareChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
 
-            // Legend + crosshair values (placed on top of the chart)
+            /// Legend + crosshair values (placed on top of the chart)
             HStack(spacing: 16) {
                 LegendDot(color: .blue, label: primary.symbol)
                 if let date = selectedDate,
@@ -241,8 +241,6 @@ struct CompareChart: View {
                                         selectedDate = date
                                     }
                                 }
-                            /// So the data not removed after tap
-//                                .onEnded { _ in selectedDate = nil }
                         ).onTapGesture {
                             selectedDate = nil
                         }

@@ -2,8 +2,8 @@ import json
 from datetime import datetime, timedelta
 import random
 
-end_date = datetime(2026, 4, 1)
-current_equity = 99.0
+end_date = datetime(2027, 1, 1)
+current_equity = 10000
 data = []
 
 # Generate 365 days of data working backwards
