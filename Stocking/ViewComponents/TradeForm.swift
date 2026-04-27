@@ -152,7 +152,7 @@ private struct StepperRow: View {
             }
             .buttonStyle(.plain)
 
-            Text("\(value)")
+            Text("\(value, specifier: "%.2f")")
                 .font(.system(size: 15, weight: .semibold))
                 .frame(minWidth: 44, alignment: .center)
 

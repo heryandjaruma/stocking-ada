@@ -9,24 +9,23 @@ import SwiftUI
 import SwiftData
 
 struct OrderHistoryView: View {
-//    var symbol: String?
     var orders: [Order]
-
-//    private var filteredOrders: [Order] {
-//        orders.filter { symbol == nil || $0.stockSymbol == symbol }
-//    }
+    
+    var reversedOrders: [Order] {
+        return orders.reversed()
+    }
 
     var body: some View {
         ScrollView {
             LazyVStack {
-                if orders.isEmpty {
+                if reversedOrders.isEmpty {
                     ContentUnavailableView(
                         "No Orders Yet",
                         systemImage: "chart.line.flattrend.xyaxis",
                         description: Text("You haven't bought anything yet.")
                     )
                 } else {
-                    ForEach(orders) { order in
+                    ForEach(reversedOrders) { order in
                         OrderCard(order: order)
                     }
                 }
