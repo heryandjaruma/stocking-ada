@@ -13,7 +13,7 @@ struct HomeView: View {
     var orders: [Order] = []
 
     var onForwardDay: (() -> Void)? = nil  // optional callback param
-    var onProcessPendingLimitOrders: (() -> Void)? = nil
+//    var onProcessPendingLimitOrders: (() -> Void)? = nil
     var onBuyOrSell: ((Order) -> Void)? = nil
 
     @State private var selectedStock: Stock? = nil
@@ -83,7 +83,7 @@ struct HomeView: View {
                     HStack {
                         Button(action: {
                             onForwardDay?()
-                            onProcessPendingLimitOrders?()
+//                            onProcessPendingLimitOrders?()
                         }) {
                             Text("Forward 1 day")
                                 .font(.footnote)
