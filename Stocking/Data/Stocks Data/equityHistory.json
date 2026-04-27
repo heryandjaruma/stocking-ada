@@ -1,0 +1,1462 @@
+[
+  {
+    "totalEquity": 10044.32,
+    "timestamp": "2026-01-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10090.45,
+    "timestamp": "2026-01-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10049.55,
+    "timestamp": "2026-01-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10158.47,
+    "timestamp": "2026-01-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10259.09,
+    "timestamp": "2026-01-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10295.84,
+    "timestamp": "2026-01-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10202.93,
+    "timestamp": "2026-01-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10320.7,
+    "timestamp": "2026-01-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10229.9,
+    "timestamp": "2026-01-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10159.53,
+    "timestamp": "2026-01-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10247.64,
+    "timestamp": "2026-01-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10349.33,
+    "timestamp": "2026-01-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10361.97,
+    "timestamp": "2026-01-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10256.4,
+    "timestamp": "2026-01-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10235.87,
+    "timestamp": "2026-01-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10165.73,
+    "timestamp": "2026-01-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10235.57,
+    "timestamp": "2026-01-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10230.75,
+    "timestamp": "2026-01-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10259.38,
+    "timestamp": "2026-01-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10273.12,
+    "timestamp": "2026-01-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10382.78,
+    "timestamp": "2026-01-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10407.03,
+    "timestamp": "2026-01-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10439.48,
+    "timestamp": "2026-01-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10563.76,
+    "timestamp": "2026-01-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10682.68,
+    "timestamp": "2026-01-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10585.48,
+    "timestamp": "2026-01-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10646.99,
+    "timestamp": "2026-01-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10605.9,
+    "timestamp": "2026-01-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10660.67,
+    "timestamp": "2026-01-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10572.32,
+    "timestamp": "2026-01-31T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10543.8,
+    "timestamp": "2026-02-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10534.46,
+    "timestamp": "2026-02-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10471.63,
+    "timestamp": "2026-02-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10486.8,
+    "timestamp": "2026-02-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10398.93,
+    "timestamp": "2026-02-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10431.33,
+    "timestamp": "2026-02-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10434.57,
+    "timestamp": "2026-02-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10359.57,
+    "timestamp": "2026-02-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10280.78,
+    "timestamp": "2026-02-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10247.76,
+    "timestamp": "2026-02-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10247.8,
+    "timestamp": "2026-02-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10148.97,
+    "timestamp": "2026-02-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10062.11,
+    "timestamp": "2026-02-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10100.62,
+    "timestamp": "2026-02-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10084.78,
+    "timestamp": "2026-02-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10128.23,
+    "timestamp": "2026-02-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10039.71,
+    "timestamp": "2026-02-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10149.38,
+    "timestamp": "2026-02-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10029.96,
+    "timestamp": "2026-02-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10139.46,
+    "timestamp": "2026-02-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10074.09,
+    "timestamp": "2026-02-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10003.11,
+    "timestamp": "2026-02-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10036.67,
+    "timestamp": "2026-02-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10099.55,
+    "timestamp": "2026-02-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10124.76,
+    "timestamp": "2026-02-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10124.89,
+    "timestamp": "2026-02-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10053.1,
+    "timestamp": "2026-02-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9984.25,
+    "timestamp": "2026-02-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10055.58,
+    "timestamp": "2026-03-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9947.12,
+    "timestamp": "2026-03-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10025.1,
+    "timestamp": "2026-03-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9926.76,
+    "timestamp": "2026-03-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9892.4,
+    "timestamp": "2026-03-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9812.96,
+    "timestamp": "2026-03-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9865.98,
+    "timestamp": "2026-03-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9980.18,
+    "timestamp": "2026-03-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10006.36,
+    "timestamp": "2026-03-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10011.59,
+    "timestamp": "2026-03-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10123.1,
+    "timestamp": "2026-03-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10106.66,
+    "timestamp": "2026-03-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10143.66,
+    "timestamp": "2026-03-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10192.93,
+    "timestamp": "2026-03-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10173.37,
+    "timestamp": "2026-03-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10266.45,
+    "timestamp": "2026-03-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10364.81,
+    "timestamp": "2026-03-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10445.46,
+    "timestamp": "2026-03-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10328.86,
+    "timestamp": "2026-03-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10321.65,
+    "timestamp": "2026-03-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10428.02,
+    "timestamp": "2026-03-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10440.99,
+    "timestamp": "2026-03-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10395.19,
+    "timestamp": "2026-03-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10308.83,
+    "timestamp": "2026-03-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10294.6,
+    "timestamp": "2026-03-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10230.36,
+    "timestamp": "2026-03-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10140.26,
+    "timestamp": "2026-03-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10183.82,
+    "timestamp": "2026-03-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10142.99,
+    "timestamp": "2026-03-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10142.51,
+    "timestamp": "2026-03-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10201.23,
+    "timestamp": "2026-03-31T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10321.14,
+    "timestamp": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10426.97,
+    "timestamp": "2026-04-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10393.92,
+    "timestamp": "2026-04-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10450.8,
+    "timestamp": "2026-04-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10558.96,
+    "timestamp": "2026-04-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10682.15,
+    "timestamp": "2026-04-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10702.9,
+    "timestamp": "2026-04-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10597.6,
+    "timestamp": "2026-04-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10542.99,
+    "timestamp": "2026-04-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10631.99,
+    "timestamp": "2026-04-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10534.55,
+    "timestamp": "2026-04-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10611.19,
+    "timestamp": "2026-04-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10499.83,
+    "timestamp": "2026-04-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10547.28,
+    "timestamp": "2026-04-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10618.95,
+    "timestamp": "2026-04-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10655.32,
+    "timestamp": "2026-04-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10762.99,
+    "timestamp": "2026-04-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10752.36,
+    "timestamp": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10833.1,
+    "timestamp": "2026-04-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10786.1,
+    "timestamp": "2026-04-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10730.51,
+    "timestamp": "2026-04-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10674.6,
+    "timestamp": "2026-04-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10716.2,
+    "timestamp": "2026-04-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10689.98,
+    "timestamp": "2026-04-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10611.97,
+    "timestamp": "2026-04-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10684.21,
+    "timestamp": "2026-04-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10619.05,
+    "timestamp": "2026-04-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10612.41,
+    "timestamp": "2026-04-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10555.01,
+    "timestamp": "2026-04-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10630.46,
+    "timestamp": "2026-04-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10615.66,
+    "timestamp": "2026-05-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10535.57,
+    "timestamp": "2026-05-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10551.94,
+    "timestamp": "2026-05-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10472.27,
+    "timestamp": "2026-05-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10349.99,
+    "timestamp": "2026-05-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10250.72,
+    "timestamp": "2026-05-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10344.23,
+    "timestamp": "2026-05-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10255.34,
+    "timestamp": "2026-05-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10196.59,
+    "timestamp": "2026-05-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10242.74,
+    "timestamp": "2026-05-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10318.43,
+    "timestamp": "2026-05-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10389.09,
+    "timestamp": "2026-05-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10384.54,
+    "timestamp": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10343.65,
+    "timestamp": "2026-05-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10408.99,
+    "timestamp": "2026-05-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10404.05,
+    "timestamp": "2026-05-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10390.05,
+    "timestamp": "2026-05-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10436.28,
+    "timestamp": "2026-05-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10485.69,
+    "timestamp": "2026-05-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10438.11,
+    "timestamp": "2026-05-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10530.77,
+    "timestamp": "2026-05-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10558.93,
+    "timestamp": "2026-05-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10505.25,
+    "timestamp": "2026-05-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10532.88,
+    "timestamp": "2026-05-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10614.38,
+    "timestamp": "2026-05-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10645.57,
+    "timestamp": "2026-05-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10729.43,
+    "timestamp": "2026-05-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10721.61,
+    "timestamp": "2026-05-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10683.46,
+    "timestamp": "2026-05-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10664.55,
+    "timestamp": "2026-05-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10756.16,
+    "timestamp": "2026-05-31T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10771.55,
+    "timestamp": "2026-06-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10699.8,
+    "timestamp": "2026-06-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10680.82,
+    "timestamp": "2026-06-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10676.08,
+    "timestamp": "2026-06-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10737.97,
+    "timestamp": "2026-06-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10670.93,
+    "timestamp": "2026-06-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10587.05,
+    "timestamp": "2026-06-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10502.48,
+    "timestamp": "2026-06-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10377.06,
+    "timestamp": "2026-06-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10420.0,
+    "timestamp": "2026-06-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10505.21,
+    "timestamp": "2026-06-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10596.59,
+    "timestamp": "2026-06-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10524.17,
+    "timestamp": "2026-06-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10632.53,
+    "timestamp": "2026-06-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10701.19,
+    "timestamp": "2026-06-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10707.83,
+    "timestamp": "2026-06-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10629.66,
+    "timestamp": "2026-06-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10577.62,
+    "timestamp": "2026-06-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10595.89,
+    "timestamp": "2026-06-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10592.87,
+    "timestamp": "2026-06-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10565.58,
+    "timestamp": "2026-06-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10439.72,
+    "timestamp": "2026-06-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10510.82,
+    "timestamp": "2026-06-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10578.01,
+    "timestamp": "2026-06-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10680.2,
+    "timestamp": "2026-06-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10768.22,
+    "timestamp": "2026-06-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10842.23,
+    "timestamp": "2026-06-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10922.4,
+    "timestamp": "2026-06-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10949.29,
+    "timestamp": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10956.99,
+    "timestamp": "2026-06-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11081.51,
+    "timestamp": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11140.14,
+    "timestamp": "2026-07-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11091.68,
+    "timestamp": "2026-07-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11024.4,
+    "timestamp": "2026-07-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10979.41,
+    "timestamp": "2026-07-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10890.05,
+    "timestamp": "2026-07-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10766.95,
+    "timestamp": "2026-07-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10712.52,
+    "timestamp": "2026-07-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10659.37,
+    "timestamp": "2026-07-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10741.22,
+    "timestamp": "2026-07-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10835.01,
+    "timestamp": "2026-07-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10796.96,
+    "timestamp": "2026-07-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10775.26,
+    "timestamp": "2026-07-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10898.21,
+    "timestamp": "2026-07-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10793.6,
+    "timestamp": "2026-07-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10860.25,
+    "timestamp": "2026-07-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10952.11,
+    "timestamp": "2026-07-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10849.03,
+    "timestamp": "2026-07-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10949.54,
+    "timestamp": "2026-07-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10891.95,
+    "timestamp": "2026-07-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10894.75,
+    "timestamp": "2026-07-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10879.51,
+    "timestamp": "2026-07-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10883.14,
+    "timestamp": "2026-07-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10893.16,
+    "timestamp": "2026-07-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11012.43,
+    "timestamp": "2026-07-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10916.71,
+    "timestamp": "2026-07-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10804.81,
+    "timestamp": "2026-07-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10821.76,
+    "timestamp": "2026-07-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10936.22,
+    "timestamp": "2026-07-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11016.82,
+    "timestamp": "2026-07-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10888.07,
+    "timestamp": "2026-07-31T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10764.49,
+    "timestamp": "2026-08-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10891.14,
+    "timestamp": "2026-08-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10814.92,
+    "timestamp": "2026-08-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10751.94,
+    "timestamp": "2026-08-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10880.37,
+    "timestamp": "2026-08-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10783.11,
+    "timestamp": "2026-08-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10822.73,
+    "timestamp": "2026-08-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10767.8,
+    "timestamp": "2026-08-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10870.47,
+    "timestamp": "2026-08-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10870.54,
+    "timestamp": "2026-08-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10980.33,
+    "timestamp": "2026-08-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10933.85,
+    "timestamp": "2026-08-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11051.78,
+    "timestamp": "2026-08-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10983.22,
+    "timestamp": "2026-08-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10961.8,
+    "timestamp": "2026-08-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11056.2,
+    "timestamp": "2026-08-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10949.98,
+    "timestamp": "2026-08-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10907.55,
+    "timestamp": "2026-08-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11009.61,
+    "timestamp": "2026-08-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10952.46,
+    "timestamp": "2026-08-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10870.67,
+    "timestamp": "2026-08-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10855.37,
+    "timestamp": "2026-08-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10858.19,
+    "timestamp": "2026-08-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10968.91,
+    "timestamp": "2026-08-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11036.66,
+    "timestamp": "2026-08-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11091.92,
+    "timestamp": "2026-08-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11050.91,
+    "timestamp": "2026-08-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10977.09,
+    "timestamp": "2026-08-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10983.58,
+    "timestamp": "2026-08-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11050.94,
+    "timestamp": "2026-08-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11058.7,
+    "timestamp": "2026-08-31T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10963.17,
+    "timestamp": "2026-09-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10931.47,
+    "timestamp": "2026-09-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11032.74,
+    "timestamp": "2026-09-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11010.12,
+    "timestamp": "2026-09-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10898.44,
+    "timestamp": "2026-09-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10836.57,
+    "timestamp": "2026-09-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10816.47,
+    "timestamp": "2026-09-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10788.43,
+    "timestamp": "2026-09-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10866.61,
+    "timestamp": "2026-09-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10885.69,
+    "timestamp": "2026-09-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10963.15,
+    "timestamp": "2026-09-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10913.15,
+    "timestamp": "2026-09-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11019.66,
+    "timestamp": "2026-09-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10952.88,
+    "timestamp": "2026-09-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11059.14,
+    "timestamp": "2026-09-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11047.35,
+    "timestamp": "2026-09-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11005.26,
+    "timestamp": "2026-09-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10998.0,
+    "timestamp": "2026-09-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11119.05,
+    "timestamp": "2026-09-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11134.57,
+    "timestamp": "2026-09-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11011.41,
+    "timestamp": "2026-09-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11030.37,
+    "timestamp": "2026-09-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11158.39,
+    "timestamp": "2026-09-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11115.63,
+    "timestamp": "2026-09-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11187.14,
+    "timestamp": "2026-09-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11160.32,
+    "timestamp": "2026-09-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11034.03,
+    "timestamp": "2026-09-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11076.1,
+    "timestamp": "2026-09-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11185.68,
+    "timestamp": "2026-09-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11301.31,
+    "timestamp": "2026-09-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11305.37,
+    "timestamp": "2026-10-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11207.06,
+    "timestamp": "2026-10-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11153.44,
+    "timestamp": "2026-10-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11120.94,
+    "timestamp": "2026-10-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 11038.37,
+    "timestamp": "2026-10-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10961.52,
+    "timestamp": "2026-10-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10926.71,
+    "timestamp": "2026-10-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10932.78,
+    "timestamp": "2026-10-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10972.62,
+    "timestamp": "2026-10-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10966.37,
+    "timestamp": "2026-10-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10893.33,
+    "timestamp": "2026-10-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10917.76,
+    "timestamp": "2026-10-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10960.6,
+    "timestamp": "2026-10-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10958.09,
+    "timestamp": "2026-10-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10906.12,
+    "timestamp": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10796.9,
+    "timestamp": "2026-10-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10741.6,
+    "timestamp": "2026-10-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10688.94,
+    "timestamp": "2026-10-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10763.14,
+    "timestamp": "2026-10-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10710.17,
+    "timestamp": "2026-10-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10785.41,
+    "timestamp": "2026-10-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10666.56,
+    "timestamp": "2026-10-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10718.26,
+    "timestamp": "2026-10-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10640.14,
+    "timestamp": "2026-10-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10711.99,
+    "timestamp": "2026-10-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10769.0,
+    "timestamp": "2026-10-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10814.37,
+    "timestamp": "2026-10-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10736.02,
+    "timestamp": "2026-10-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10715.66,
+    "timestamp": "2026-10-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10753.73,
+    "timestamp": "2026-10-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10864.56,
+    "timestamp": "2026-10-31T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10780.86,
+    "timestamp": "2026-11-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10692.91,
+    "timestamp": "2026-11-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10677.33,
+    "timestamp": "2026-11-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10603.06,
+    "timestamp": "2026-11-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10710.52,
+    "timestamp": "2026-11-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10639.37,
+    "timestamp": "2026-11-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10577.49,
+    "timestamp": "2026-11-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10615.23,
+    "timestamp": "2026-11-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10652.03,
+    "timestamp": "2026-11-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10594.35,
+    "timestamp": "2026-11-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10536.35,
+    "timestamp": "2026-11-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10429.67,
+    "timestamp": "2026-11-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10495.14,
+    "timestamp": "2026-11-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10414.1,
+    "timestamp": "2026-11-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10424.14,
+    "timestamp": "2026-11-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10374.49,
+    "timestamp": "2026-11-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10368.42,
+    "timestamp": "2026-11-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10288.44,
+    "timestamp": "2026-11-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10273.31,
+    "timestamp": "2026-11-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10283.59,
+    "timestamp": "2026-11-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10301.78,
+    "timestamp": "2026-11-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10266.6,
+    "timestamp": "2026-11-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10314.47,
+    "timestamp": "2026-11-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10374.01,
+    "timestamp": "2026-11-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10337.44,
+    "timestamp": "2026-11-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10382.53,
+    "timestamp": "2026-11-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10313.68,
+    "timestamp": "2026-11-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10315.47,
+    "timestamp": "2026-11-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10287.54,
+    "timestamp": "2026-11-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10402.39,
+    "timestamp": "2026-11-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10454.46,
+    "timestamp": "2026-12-01T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10334.15,
+    "timestamp": "2026-12-02T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10455.8,
+    "timestamp": "2026-12-03T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10389.06,
+    "timestamp": "2026-12-04T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10405.43,
+    "timestamp": "2026-12-05T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10366.84,
+    "timestamp": "2026-12-06T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10316.69,
+    "timestamp": "2026-12-07T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10299.64,
+    "timestamp": "2026-12-08T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10409.71,
+    "timestamp": "2026-12-09T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10481.76,
+    "timestamp": "2026-12-10T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10418.2,
+    "timestamp": "2026-12-11T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10525.91,
+    "timestamp": "2026-12-12T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10630.33,
+    "timestamp": "2026-12-13T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10578.32,
+    "timestamp": "2026-12-14T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10475.48,
+    "timestamp": "2026-12-15T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10408.86,
+    "timestamp": "2026-12-16T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10373.97,
+    "timestamp": "2026-12-17T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10412.18,
+    "timestamp": "2026-12-18T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10437.12,
+    "timestamp": "2026-12-19T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10440.95,
+    "timestamp": "2026-12-20T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10411.95,
+    "timestamp": "2026-12-21T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10314.99,
+    "timestamp": "2026-12-22T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10269.45,
+    "timestamp": "2026-12-23T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10237.67,
+    "timestamp": "2026-12-24T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10211.38,
+    "timestamp": "2026-12-25T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10261.4,
+    "timestamp": "2026-12-26T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10219.13,
+    "timestamp": "2026-12-27T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10106.04,
+    "timestamp": "2026-12-28T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9999.06,
+    "timestamp": "2026-12-29T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9943.45,
+    "timestamp": "2026-12-30T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 9899.37,
+    "timestamp": "2026-12-31T00:00:00.000Z"
+  },
+  {
+    "totalEquity": 10000,
+    "timestamp": "2027-01-01T00:00:00.000Z"
+  }
+]
